@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy_utils import create_database, database_exists
 
 from .routers import menus, submenus, dishes
@@ -21,6 +20,8 @@ app.include_router(submenus.router)
 app.include_router(dishes.router)
 
 
-@app.get("/api/vi/")
+@app.get("/api/v1/")
 def root():
-    return {"message": "This is the main page"}
+    return {
+        "message": "Checkout the code at https://github.com/cyrillus31/YLab_Homework-1"
+    }

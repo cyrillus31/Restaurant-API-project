@@ -1,9 +1,6 @@
-from typing import Optional, Any
+from typing import Optional
 
-from pydantic import BaseModel  # EmailStr
-from datetime import datetime
-
-# from sqlalchemy.dialects.postgresql import UUID
+from pydantic import BaseModel
 
 
 class MenuCreate(BaseModel):
@@ -19,7 +16,7 @@ class SubmenuCreate(BaseModel):
 class MenuOut(BaseModel):
     id: str
     title: str
-    description: Optional[str] | None
+    description: Optional[str]
     submenus_count: int
     dishes_count: int
 
@@ -30,8 +27,8 @@ class MenuOut(BaseModel):
 class SubmenuOut(BaseModel):
     id: str
     title: str
-    description: Optional[str] | None
-    dishes_count: Optional[int]
+    description: Optional[str]
+    dishes_count: int
 
     class Config:
         from_attributes = True

@@ -1,15 +1,7 @@
-import logging
-
-
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
-
+from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
-from sqlalchemy.exc import IntegrityError
-
-
-from .. import models, schemas, crud
-
+from .. import schemas, crud
 from ..database import get_db
 
 

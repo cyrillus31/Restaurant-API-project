@@ -1,28 +1,15 @@
 import logging
 
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 
-from .. import models, schemas, crud
+from .. import schemas, crud
 from ..database import get_db
 
 
 router = APIRouter(
     prefix="/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes", tags=["Dishes"]
 )
-
-
-# @router.get("/", status_code=status.HTTP_201_CREATED)
-# def SUPER_TEEST(menu_id, submenu_id, db: Session = Depends(get_db)):
-# response = (
-# db.query(models.Menu)
-# .filter(models.Menu.id == menu_id)
-# .first()
-# .submenus_count.filter(models.Submenu.id == submenu_id)
-# .first()
-# )
-# return {(response)}
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DishOut)

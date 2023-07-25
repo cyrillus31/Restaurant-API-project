@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 
-from . import utils
-
 
 from . import models, schemas
+
+
+#######Menu Operations############
 
 
 def create_menu(db: Session, menu: schemas.MenuCreate):
@@ -46,23 +47,7 @@ def update_menu_by_id(db: Session, menu: schemas.MenuCreate, id: str):
     return update_menu.first()
 
 
-##################################
-##################################
-##################################
-
-# def get_menu_relationship_by_id(db: Session, id: str) -> list[models.Submenu]:
-
-# return db.query(modles.Menu).join(models.Submenu).filter(models.Menu.id == id).all()
-
-
-# def get_submenu_relationship_by_id(db: Session, id: str) -> list[models.Dish]:
-# return (
-
-# db.query(modles.Menu).join(models.Submenu).filter(models.Submenu.id == id).all()
-# )
-##################################
-##################################
-##################################
+#######Submenu operations########
 
 
 def create_submenu(menu_id, db: Session, submenu: schemas.MenuCreate):
@@ -117,9 +102,7 @@ def update_submenu_by_id(db: Session, submenu: schemas.MenuCreate, id: str):
     return update_menu.first()
 
 
-##################################
-##################################
-##################################
+#######Dishes operations ########
 
 
 def create_dish(submenu_id, db: Session, dish: schemas.MenuCreate):
@@ -148,8 +131,6 @@ def get_dishes(submenu_id, db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_dish_by_title(db: Session, title: str):
-    # search only by title fix later
-
     return db.query(models.Dish).filter(models.Dish.title == title).first()
 
 
