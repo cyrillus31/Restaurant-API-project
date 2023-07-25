@@ -1,13 +1,10 @@
 import logging
 
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
-
 from sqlalchemy.orm import Session
-
 from sqlalchemy.exc import IntegrityError
 
 from .. import models, schemas, crud
-
 from ..database import get_db
 
 
@@ -24,8 +21,6 @@ def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
         )
     menu = crud.create_menu(db, menu)
 
-    print("hello")
-    print(menu.submenus_count)
     return menu
 
 

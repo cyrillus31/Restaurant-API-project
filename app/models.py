@@ -32,13 +32,14 @@ class Submenu(Base):
         String, primary_key=True, nullable=False, default=lambda: str(uuid.uuid4())
     )
     title = Column(String, nullable=False)
+    description = Column(String, nullable=True)
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
     menu_id = Column(String, ForeignKey("menu.id", ondelete="CASCADE"), nullable=False)
 
-    main_menu = relationship("Menu", back_populates="submenus_count")
-    # dishes = relationship("Dish", back_populates="dishes_count")
+    # main_menu = relationship("Menu", back_populates="submenus_count")
+    dishes_count = relationship("Dish")
 
 
 class Dish(Base):
