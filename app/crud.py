@@ -25,7 +25,8 @@ def get_menu_by_id(db: Session, id: str):
 
 
 def delete_menu_by_id(db: Session, id: str):
-    return db.query(modles.Menu).filter(modles.Menu.id == id).delete()
+    db.query(models.Menu).filter(models.Menu.id == id).delete()
+    db.commit()
 
 
 def update_menu_by_id(db: Session, menu: schemas.MenuCreate, id: str):
@@ -34,7 +35,7 @@ def update_menu_by_id(db: Session, menu: schemas.MenuCreate, id: str):
     # update_menu.title = menu.title
     # update_menu.description = menu.description
     db.commit()
-    return update_menu
+    return update_menu.first()
 
 
 ##################################

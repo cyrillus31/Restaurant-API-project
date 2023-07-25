@@ -30,15 +30,12 @@ def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
-def delete_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
-    db_menu = crud.get_menu_by_title(db, title=menu.title)
-
+def delete_menu(id, db: Session = Depends(get_db)):
+    db_menu = crud.get_menu_by_id(db, id)
     if not db_menu:
         raise HTTPException(status_code=404, detail="menu not found")
-
     crud.delete_menu_by_id(db, id)
-
-    return {"status": true, "message": "The menu has been deleted"}
+    return {"status": True, "message": "The menu has been deleted"}
 
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut])
