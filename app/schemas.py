@@ -41,13 +41,14 @@ class SubmenuOut(BaseModel):
 class DishCreate(BaseModel):
     title: str
     description: Optional[str]
-    price: float
+    price: str
 
 
 class DishOut(BaseModel):
+    id: str
     title: str
     description: Optional[str]
-    price: float
+    price: str
 
     class Config:
         from_attributes = True

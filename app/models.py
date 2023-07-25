@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text  # to insert sql functions as a text
@@ -22,6 +22,7 @@ class Menu(Base):
     )
 
     submenus_count = relationship("Submenu")
+
     # dishes_count = relationship("Submenu")
 
 
@@ -49,7 +50,7 @@ class Dish(Base):
     )
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    price = Column(Float, nullable=False)
+    price = Column(String, nullable=False)
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
