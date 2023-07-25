@@ -38,14 +38,14 @@ def delete_submenu(menu_id, id, db: Session = Depends(get_db)):
 @router.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=list[schemas.MenuOut | None],
+    response_model=list[schemas.SubmenuOut],
 )
 def read_submenus(
     menu_id,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    response_model=list[schemas.SubmenuOut],
+    # response_model=list[schemas.SubmenuOut],
 ):
     submenus = crud.get_submenus(menu_id, db, skip=skip, limit=limit)
     for db_submenu in submenus:
