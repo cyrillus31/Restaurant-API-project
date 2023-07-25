@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel  # EmailStr
 from datetime import datetime
@@ -20,8 +20,8 @@ class MenuOut(BaseModel):
     id: str
     title: str
     description: Optional[str] | None
-    # submenus_count: list
-    # dishes_count: int
+    submenus_count: int
+    dishes_count: int
 
     class Config:
         from_attributes = True
@@ -31,8 +31,7 @@ class SubmenuOut(BaseModel):
     id: str
     title: str
     description: Optional[str] | None
-    # submenus_count: list
-    # dishes_count: list
+    dishes_count: Any
 
     class Config:
         from_attributes = True

@@ -16,7 +16,9 @@ from ..database import get_db
 router = APIRouter(prefix="/api/v1/menus/{menu_id}/submenus", tags=["Submenus"])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
+@router.post(
+    "/", status_code=status.HTTP_201_CREATED, response_model=schemas.SubmenuOut
+)
 def create_submenu(menu_id, submenu: schemas.MenuCreate, db: Session = Depends(get_db)):
     db_menu = crud.get_submenu_by_title(db, title=submenu.title)
 
@@ -55,7 +57,6 @@ def read_submenus(
 ):
     submenus = crud.get_submenus(menu_id, db, skip=skip, limit=limit)
 
-    print("hi")
     return submenus
 
 
@@ -65,6 +66,7 @@ def get_menu(id, db: Session = Depends(get_db)):
 
     if not db_submenu:
         raise HTTPException(status_code=404, detail="submenu not found")
+    db_submenu.dishes_count = crud.get_sumbenus_dishes_count(db, id)
     return db_submenu
 
 

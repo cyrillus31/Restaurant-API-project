@@ -171,3 +171,20 @@ def update_dish_by_id(db: Session, dish: schemas.DishCreate, id: str):
     db.commit()
 
     return update_dish.first()
+
+
+def get_menu_submenus_count(db, menu_id):
+    return len(db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all())
+
+
+def get_sumbenus_dishes_count(db, submenu_id):
+    return len(db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).all())
+
+
+def get_menus_dishes_count(db, menu_id):
+    return len(
+        db.query(models.Dish)
+        .join(models.Submenu)
+        .filter(models.Submenu.menu_id == menu_id)
+        .all()
+    )

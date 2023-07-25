@@ -36,19 +36,25 @@ def delete_menu(id, db: Session = Depends(get_db)):
 @router.get("/", status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut])
 def read_menus(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     menus = crud.get_menus(db, skip=skip, limit=limit)
+    for db_menu in menus:
+        db_menu.submenus_count = crud.get_menu_submenus_count(db, db_menu.id)
+        db_menu.dishes_count = crud.get_menus_dishes_count(db, db_menu.id)
+
     return menus
 
 
-@router.get("/{id}", status_code=status.HTTP_200_OK)
+@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
 def get_menu(id, db: Session = Depends(get_db)):
     db_menu = crud.get_menu_by_id(db, id=id)
 
     if not db_menu:
         raise HTTPException(status_code=404, detail="menu not found")
+    db_menu.submenus_count = crud.get_menu_submenus_count(db, id)
+    db_menu.dishes_count = crud.get_menus_dishes_count(db, id)
     return db_menu
 
 
-@router.patch("/{id}", status_code=status.HTTP_200_OK)
+@router.patch("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
 def update_menu(id, menu: schemas.MenuCreate, db: Session = Depends(get_db)):
     db_menu = crud.get_menu_by_id(db, id)
     if not db_menu:

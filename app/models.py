@@ -21,7 +21,9 @@ class Menu(Base):
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
 
-    submenus_count = relationship("Submenu")
+    submenus = relationship("Submenu")
+    submenus_count = 0
+    dishes_count = 0
 
     # dishes_count = relationship("Submenu")
 
@@ -39,8 +41,9 @@ class Submenu(Base):
     )
     menu_id = Column(String, ForeignKey("menu.id", ondelete="CASCADE"), nullable=False)
 
-    # main_menu = relationship("Menu", back_populates="submenus_count")
-    dishes_count = relationship("Dish")
+    # main_menu = relationship("Menu")
+    dishes_relation = relationship("Dish")
+    dishes_count = 0
 
 
 class Dish(Base):
