@@ -39,13 +39,13 @@ def create_dish(submenu_id, dish: schemas.DishCreate, db: Session = Depends(get_
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
-def delete_submenu(menu_id, id, db: Session = Depends(get_db)):
-    db_submenu = crud.get_submenu_by_id(db, id)
+def delete_dish(submenu_id, id, db: Session = Depends(get_db)):
+    db_dish = crud.get_dish_by_id(db, id)
 
-    if not db_submenu:
-        raise HTTPException(status_code=404, detail="submenu not found")
+    if not db_dish:
+        raise HTTPException(status_code=404, detail="dish not found")
 
-    crud.delete_submenu_by_id(db, id)
+    crud.delete_dish_by_id(db, id)
 
     return {"status": True, "message": "The menu has been deleted"}
 
@@ -77,14 +77,14 @@ def get_dish(id, db: Session = Depends(get_db)):
     return db_dish
 
 
-@router.patch("/{id}", status_code=status.HTTP_200_OK)
-def update_submenu(
-    menu_id, id, submenu: schemas.MenuCreate, db: Session = Depends(get_db)
+@router.patch("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.DishOut)
+def update_dish(
+    submenu_id, id, dish: schemas.DishCreate, db: Session = Depends(get_db)
 ):
-    db_submenu = crud.get_submenu_by_id(db, id)
+    db_dish = crud.get_dish_by_id(db, id)
 
-    if not db_submenu:
-        raise HTTPException(status_code=404, detail="menu not found")
+    if not db_dish:
+        raise HTTPException(status_code=404, detail="dish not found")
 
-    updated_submenu = crud.update_submenu_by_id(db=db, submenu=submenu, id=id)
-    return updated_submenu
+    updated_dish = crud.update_dish_by_id(db=db, dish=dish, id=id)
+    return updated_dish

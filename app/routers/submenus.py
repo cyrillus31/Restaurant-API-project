@@ -59,7 +59,7 @@ def read_submenus(
     return submenus
 
 
-@router.get("/{id}", status_code=status.HTTP_200_OK)
+@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut)
 def get_menu(id, db: Session = Depends(get_db)):
     db_submenu = crud.get_submenu_by_id(db, id=id)
 
@@ -68,7 +68,9 @@ def get_menu(id, db: Session = Depends(get_db)):
     return db_submenu
 
 
-@router.patch("/{id}", status_code=status.HTTP_200_OK)
+@router.patch(
+    "/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut
+)
 def update_submenu(
     menu_id, id, submenu: schemas.MenuCreate, db: Session = Depends(get_db)
 ):

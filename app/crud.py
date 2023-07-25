@@ -158,16 +158,16 @@ def get_dish_by_id(db: Session, id: str):
 
 
 def delete_dish_by_id(db: Session, id: str):
-    db.query(models.Submenu).filter(models.Submenu.id == id).delete()
+    db.query(models.Dish).filter(models.Dish.id == id).delete()
 
     db.commit()
 
 
-def update_dish_by_id(db: Session, submenu: schemas.MenuCreate, id: str):
-    update_menu = db.query(models.Submenu).filter(models.Submenu.id == id)
+def update_dish_by_id(db: Session, dish: schemas.DishCreate, id: str):
+    update_dish = db.query(models.Dish).filter(models.Dish.id == id)
 
-    update_menu.update(submenu.dict(), synchronize_session=False)
+    update_dish.update(dish.dict(), synchronize_session=False)
 
     db.commit()
 
-    return update_menu.first()
+    return update_dish.first()
