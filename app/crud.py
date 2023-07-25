@@ -83,9 +83,9 @@ def get_submenu_by_id(db: Session, id: str):
     return db.query(models.Submenu).filter(models.Submenu.id == id).first()
 
 
-# def delete_menu_by_id(db: Session, id: str):
-# db.query(models.Menu).filter(models.Menu.id == id).delete()
-# db.commit()
+def delete_submenu_by_id(db: Session, id: str):
+    db.query(models.Submenu).filter(models.Submenu.id == id).delete()
+    db.commit()
 
 
 def update_submenu_by_id(db: Session, submenu: schemas.MenuCreate, id: str):

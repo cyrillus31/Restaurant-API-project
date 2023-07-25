@@ -1,10 +1,15 @@
 import logging
 
+
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+
 from sqlalchemy.orm import Session
+
 from sqlalchemy.exc import IntegrityError
 
+
 from .. import models, schemas, crud
+
 from ..database import get_db
 
 
@@ -25,11 +30,14 @@ def create_submenu(menu_id, submenu: schemas.MenuCreate, db: Session = Depends(g
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
-def delete_menu(id, db: Session = Depends(get_db)):
-    db_menu = crud.get_menu_by_id(db, id)
-    if not db_menu:
-        raise HTTPException(status_code=404, detail="menu not found")
-    crud.delete_menu_by_id(db, id)
+def delete_submenu(menu_id, id, db: Session = Depends(get_db)):
+    db_submenu = crud.get_submenu_by_id(db, id)
+
+    if not db_submenu:
+        raise HTTPException(status_code=404, detail="submenu not found")
+
+    crud.delete_submenu_by_id(db, id)
+
     return {"status": True, "message": "The menu has been deleted"}
 
 
@@ -46,6 +54,7 @@ def read_submenus(
     response_model=list[schemas.SubmenuOut],
 ):
     submenus = crud.get_submenus(menu_id, db, skip=skip, limit=limit)
+
     print("hi")
     return submenus
 
@@ -55,7 +64,7 @@ def get_menu(id, db: Session = Depends(get_db)):
     db_submenu = crud.get_submenu_by_id(db, id=id)
 
     if not db_submenu:
-        raise HTTPException(status_code=404, detail="menu not found")
+        raise HTTPException(status_code=404, detail="submenu not found")
     return db_submenu
 
 
@@ -64,7 +73,9 @@ def update_submenu(
     menu_id, id, submenu: schemas.MenuCreate, db: Session = Depends(get_db)
 ):
     db_submenu = crud.get_submenu_by_id(db, id)
+
     if not db_submenu:
         raise HTTPException(status_code=404, detail="menu not found")
+
     updated_submenu = crud.update_submenu_by_id(db=db, submenu=submenu, id=id)
     return updated_submenu
