@@ -56,6 +56,8 @@ def read_submenus(
     response_model=list[schemas.SubmenuOut],
 ):
     submenus = crud.get_submenus(menu_id, db, skip=skip, limit=limit)
+    for db_submenu in submenus:
+        db_submenu.dishes_count = crud.get_sumbenus_dishes_count(db, id)
 
     return submenus
 

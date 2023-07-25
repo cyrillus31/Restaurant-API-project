@@ -31,7 +31,7 @@ class SubmenuOut(BaseModel):
     id: str
     title: str
     description: Optional[str] | None
-    dishes_count: Any
+    dishes_count: Optional[int]
 
     class Config:
         from_attributes = True
