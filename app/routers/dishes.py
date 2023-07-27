@@ -40,7 +40,7 @@ def delete_dish(submenu_id, id, db: Session = Depends(get_db)):
 @router.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=list[schemas.MenuOut | None],
+    response_model=list[schemas.DishOut | None],
 )
 def read_dishes(
     submenu_id,
