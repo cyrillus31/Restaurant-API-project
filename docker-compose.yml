@@ -1,7 +1,7 @@
 version: '3'
 services:
   homework-1-postgres:
-    image: postgres:alpine
+    image: postgres:15.1-alpine
     environment:
       TZ: 'Europe/Moscow'
       POSTGRES_PASSWORD: 'password'

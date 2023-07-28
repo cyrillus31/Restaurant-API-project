@@ -51,7 +51,6 @@ def read_dishes(
 ):
     submenus = crud.get_dishes(submenu_id, db, skip=skip, limit=limit)
 
-    print("hi")
     return submenus
 
 
