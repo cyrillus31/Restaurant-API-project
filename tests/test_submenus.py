@@ -31,12 +31,15 @@ def test_get_submenu(session, client, PREFIX, test_menus, test_submenus):
         .first()
         .id
     )
-    print(session.query(models.Menu).first().created_at)
     res = client.get(f"{PREFIX}/menus/{menu_id}/submenus/{submenu_id}")
-    print("Test request was sent to", res.url, res.content)
+    print("Test request was sent to", res.url)
     assert res.status_code == 200
     response_submenu = schemas.SubmenuOut(**res.json())
-    assert response_submenu.title == test_submenus[0].title
+    db_submenu = (
+        session.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+    )
+    assert response_submenu.title == db_submenu.title
+    assert response_submenu.description == db_submenu.description
 
 
 def test_get_menu_not_exists(session, client, PREFIX, test_menus, test_submenus):
