@@ -59,23 +59,9 @@ def client(session):
     yield TestClient(app)
 
 
-# create test models using SQL
-@pytest.fixture(scope="function")
-def test_menus(session):
-    menus_data = [
-        {"title": "test menu 1", "description": "description of test menu 1"},
-        {"title": "test menu 2", "description": "description of test menu 2"},
-        {"title": "test menu 3", "description": "description of test menu 3"},
-    ]
-    new_menus = [models.Menu(**post) for post in menus_data]
-    session.add_all(new_menus)
-    session.commit()
-
-    db_new_menus_list = session.query(models.Menu).all()
-    return db_new_menus_list
-
-
 """
+Creating test models in database
+
 #######################################
 TEST DATABASE STRUCTURE using fixtures 
 
@@ -92,6 +78,21 @@ data_test/
 
 #######################################
 """
+
+
+@pytest.fixture(scope="function")
+def test_menus(session):
+    menus_data = [
+        {"title": "test menu 1", "description": "description of test menu 1"},
+        {"title": "test menu 2", "description": "description of test menu 2"},
+        {"title": "test menu 3", "description": "description of test menu 3"},
+    ]
+    new_menus = [models.Menu(**menu) for menu in menus_data]
+    session.add_all(new_menus)
+    session.commit()
+
+    db_new_menus_list = session.query(models.Menu).all()
+    return db_new_menus_list
 
 
 @pytest.fixture(scope="function")
