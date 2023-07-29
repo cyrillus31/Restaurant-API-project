@@ -34,7 +34,7 @@ def delete_dish(submenu_id, id, db: Session = Depends(get_db)):
 
     crud.delete_dish_by_id(db, id)
 
-    return {"status": True, "message": "The menu has been deleted"}
+    return {"status": True, "message": "The dish has been deleted"}
 
 
 @router.get(

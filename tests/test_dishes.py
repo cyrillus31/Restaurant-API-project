@@ -165,3 +165,48 @@ def test_update_menu_not_exists(
     )
     assert res.status_code == 404
     assert res.json()["detail"] == "dish not found"
+
+
+# Delete testing
+def test_delete_dish(session, client, PREFIX, test_menus, test_submenus, test_dishes):
+    menu_id = test_menus[0].id
+    submenu_id = (
+        session.query(models.Submenu)
+        .filter(models.Submenu.menu_id == menu_id)
+        .first()
+        .id
+    )
+    dish_id = (
+        session.query(models.Dish)
+        .filter(models.Dish.submenu_id == submenu_id)
+        .first()
+        .id
+    )
+
+    res = client.delete(
+        f"{PREFIX}/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}"
+    )
+    print("Test request was sent to", res.url)
+    assert res.status_code == 200
+    assert res.json()["status"] == True
+    assert res.json()["message"] == "The dish has been deleted"
+
+    all_dishes_list = session.query(models.Dish).all()
+    assert len(all_dishes_list) == len(test_dishes) - 1
+
+
+def test_delete_dish_not_exists(
+    session, client, PREFIX, test_menus, test_submenus, test_dishes
+):
+    menu_id = test_menus[0].id
+    submenu_id = (
+        session.query(models.Submenu)
+        .filter(models.Submenu.menu_id == menu_id)
+        .first()
+        .id
+    )
+    res = client.delete(
+        f"{PREFIX}/menus/{menu_id}/submenus/{submenu_id}/dishes/9876543210"
+    )
+    assert res.status_code == 404
+    assert res.json()["detail"] == "dish not found"
