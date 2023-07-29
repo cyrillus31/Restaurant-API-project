@@ -56,3 +56,16 @@ def test_update_menu(session, client, PREFIX, test_menus):
     updated_menu = schemas.MenuCreate(**res.json())
     assert updated_menu.title == update_data["title"]
     assert updated_menu.description == update_data["description"]
+
+
+# Delete testing
+def test_delete_menu(session, client, PREFIX, test_menus):
+    test_menu_id = test_menus[0].id
+    res = client.delete(f"{PREFIX}/menus/{test_menu_id}")
+    print("Test request was sent to", res.url)
+    assert res.status_code == 200
+    assert res.json()["status"] == True
+    assert res.json()["message"] == "The menu has been deleted"
+
+    all_menus_list = session.query(models.Menu).all()
+    assert len(all_menus_list) == len(test_menus) - 1
