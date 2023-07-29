@@ -33,6 +33,12 @@ def test_get_menu(session, client, PREFIX, test_menus):
     assert response_menu.title == test_menus[0].title
 
 
+def test_get_menu_not_exists(session, client, PREFIX, test_menus):
+    res = client.get(f"{PREFIX}/menus/9876543210")
+    assert res.status_code == 404
+    assert res.json()["detail"] == "menu not found"
+
+
 # Read multiple testing
 def test_read_menus(session, client, PREFIX, test_menus):
     res = client.get(f"{PREFIX}/menus")
@@ -41,6 +47,12 @@ def test_read_menus(session, client, PREFIX, test_menus):
 
     assert res.status_code == 200
     assert len(validated_menus_list) == len(test_menus)
+
+
+def test_get_menus_empty(session, client, PREFIX):
+    res = client.get(f"{PREFIX}/menus")
+    assert res.status_code == 200
+    assert res.json() == []
 
 
 # Update testing
@@ -58,6 +70,16 @@ def test_update_menu(session, client, PREFIX, test_menus):
     assert updated_menu.description == update_data["description"]
 
 
+def test_update_menu_not_exists(session, client, PREFIX, test_menus):
+    update_data = {
+        "title": "UPDATED test menu 1 title",
+        "description": "UPDATED test menu 1 description",
+    }
+    res = client.patch(f"{PREFIX}/menus/9876543210", json=update_data)
+    assert res.status_code == 404
+    assert res.json()["detail"] == "menu not found"
+
+
 # Delete testing
 def test_delete_menu(session, client, PREFIX, test_menus):
     test_menu_id = test_menus[0].id
@@ -69,3 +91,9 @@ def test_delete_menu(session, client, PREFIX, test_menus):
 
     all_menus_list = session.query(models.Menu).all()
     assert len(all_menus_list) == len(test_menus) - 1
+
+
+def test_delete_menu_not_exists(session, client, PREFIX, test_menus):
+    res = client.delete(f"{PREFIX}/menus/9876543210")
+    assert res.status_code == 404
+    assert res.json()["detail"] == "menu not found"
