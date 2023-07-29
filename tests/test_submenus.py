@@ -97,13 +97,16 @@ def test_update_menu(session, client, PREFIX, test_menus, test_submenus):
     assert updated_menu.description == update_data["description"]
 
 
-def test_update_menu_not_exists(session, client, PREFIX, test_menus):
+def test_update_submenu_not_exists(session, client, PREFIX, test_menus, test_submenus):
+    menu_id = test_menus[0].id
     update_data = {
         "title": "UPDATED test submenu title",
         "description": "UPDATED test submenu description",
-        "menu_id": 9876543210,
+        "menu_id": "123456",
     }
-    res = client.patch(f"{PREFIX}/menus/9876543210", json=update_data)
+    res = client.patch(
+        f"{PREFIX}/menus/{menu_id}/submenus/9876543210", json=update_data
+    )
     assert res.status_code == 404
     assert res.json()["detail"] == "menu not found"
 

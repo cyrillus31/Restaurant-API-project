@@ -117,7 +117,7 @@ def test_submenus(session, test_menus):
             "menu_id": menu2_id,
         },
     ]
-    new_submenus = [models.Submenu(**post) for post in submenus_data]
+    new_submenus = [models.Submenu(**submenu) for submenu in submenus_data]
     session.add_all(new_submenus)
     session.commit()
 
@@ -156,7 +156,7 @@ def test_dishes(session, test_menus, test_submenus):
             "submenu_id": submenu2_id,
         },
     ]
-    new_dishes = [models.Dish(**post) for dish in dishes_data]
+    new_dishes = [models.Dish(**dish) for dish in dishes_data]
     session.add_all(new_dishes)
     session.commit()
 
