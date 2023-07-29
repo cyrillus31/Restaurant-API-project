@@ -98,6 +98,7 @@ def test_update_menu(session, client, PREFIX, test_menus, test_submenus):
 
 
 def test_update_submenu_not_exists(session, client, PREFIX, test_menus, test_submenus):
+    menu_id = test_menus[0].id
     update_data = {
         "title": "UPDATED test submenu title",
         "description": "UPDATED test submenu description",
