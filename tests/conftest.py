@@ -62,14 +62,103 @@ def client(session):
 # create test models using SQL
 @pytest.fixture(scope="function")
 def test_menus(session):
-    posts_data = [
-        {"title": "test post 1", "description": "description of test post 1"},
-        {"title": "test post 2", "description": "description of test post 2"},
-        {"title": "test post 3", "description": "description of test post 3"},
+    menus_data = [
+        {"title": "test menu 1", "description": "description of test menu 1"},
+        {"title": "test menu 2", "description": "description of test menu 2"},
+        {"title": "test menu 3", "description": "description of test menu 3"},
     ]
-    new_menus = [models.Menu(**post) for post in posts_data]
+    new_menus = [models.Menu(**post) for post in menus_data]
     session.add_all(new_menus)
     session.commit()
 
     db_new_menus_list = session.query(models.Menu).all()
     return db_new_menus_list
+
+
+"""
+#######################################
+TEST DATABASE STRUCTURE using fixtures 
+
+data_test/
+├─ test menu 1/
+│  ├─ submenu 1-1/
+│  │  ├─ dish 1-1-1
+│  │  ├─ dish 1-1-2
+│  ├─ submenu 1-2/
+│  │  ├─ dish 1-2-3
+├─ test menu 2/
+│  ├─ submenu 2-3/
+├─ test menu3/
+
+#######################################
+"""
+
+
+@pytest.fixture(scope="function")
+def test_submenus(session, test_menus):
+    menu1_id = test_menus[0].id
+    menu2_id = test_menus[1].id
+    # menu3_id = test_menus[2].id
+
+    submenus_data = [
+        {
+            "title": "test submenu 1-1",
+            "description": "description of test submenu 1 in main menu 1",
+            "menu_id": menu1_id,
+        },
+        {
+            "title": "test submenu 1-2",
+            "description": "description of test submenu 2 in main menu 1",
+            "menu_id": menu1_id,
+        },
+        {
+            "title": "test submenu 2-3",
+            "description": "description of test submenu 3 in main menu 2",
+            "menu_id": menu2_id,
+        },
+    ]
+    new_submenus = [models.Submenu(**post) for post in submenus_data]
+    session.add_all(new_submenus)
+    session.commit()
+
+    db_new_submenus_list = session.query(models.Submenu).all()
+    return db_new_submenus_list
+
+
+@pytest.fixture(scope="function")
+def test_dishes(session, test_menus, test_submenus):
+    menu_id = test_menus[0].id
+    # menu2_id = test_menus[1].id
+    # menu3_id = test_menus[2].id
+    related_submenus = (
+        session.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all()
+    )
+    submenu1_id = related_submenus[0].id
+    submenu2_id = related_submenus[1].id
+
+    dishes_data = [
+        {
+            "title": "test dish 1-1-1",
+            "description": "description of test dish 1 in  submenu 1",
+            "price": "120.35",
+            "submenu_id": submenu1_id,
+        },
+        {
+            "title": "test dish 1-1-2",
+            "description": "description of test dish 2 in  submenu 1",
+            "price": "1.40",
+            "submenu_id": submenu1_id,
+        },
+        {
+            "title": "test submenu 1-2-3",
+            "description": "description of test dish 3 in  submenu 2",
+            "price": "20.45",
+            "submenu_id": submenu2_id,
+        },
+    ]
+    new_dishes = [models.Dish(**post) for dish in dishes_data]
+    session.add_all(new_dishes)
+    session.commit()
+
+    db_new_dishes_list = session.query(models.Dish).all()
+    return db_new_dishes_list

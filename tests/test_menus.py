@@ -5,7 +5,7 @@ from app import schemas
 from app import models
 
 
-# CRUD testing
+### CRUD testing
 
 
 # Create testing
@@ -49,7 +49,7 @@ def test_read_menus(session, client, PREFIX, test_menus):
     assert len(validated_menus_list) == len(test_menus)
 
 
-def test_get_menus_empty(session, client, PREFIX):
+def test_read_menus_empty(session, client, PREFIX):
     res = client.get(f"{PREFIX}/menus")
     assert res.status_code == 200
     assert res.json() == []
@@ -65,7 +65,7 @@ def test_update_menu(session, client, PREFIX, test_menus):
     res = client.patch(f"{PREFIX}/menus/{test_menu_id}", json=update_data)
     print("Test request was sent to", res.url)
     assert res.status_code == 200
-    updated_menu = schemas.MenuCreate(**res.json())
+    updated_menu = schemas.MenuOut(**res.json())
     assert updated_menu.title == update_data["title"]
     assert updated_menu.description == update_data["description"]
 
