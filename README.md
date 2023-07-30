@@ -13,7 +13,7 @@
 2. <a href="assignment/Homework_2.md"> <b>Требования к интеграционному тестировнию API ресторана</b> </a>
 
 
-### Описание API
+## Описание API
 CRUD REST API ресторана, содержащий слеудующие сущности:
 - Меню/ Menue
 - Подменю/ Submenu
@@ -34,14 +34,14 @@ CRUD REST API ресторана, содержащий слеудующие су
 
 
 
-### Запуск приложения в контейнерах
+## Запуск приложения в контейнерах
 
 |     |Образы для Docker     |
 |-----|----------------------|
 |API  | python:3.10-slim     |
 |DB   | postgres:15.1-alpine | 
 
-1. #### Запуск приложения с помощью Docker-compose
+1. ### Запуск приложения с помощью Docker-compose
 
 ```
 docker-compose up -d
@@ -49,13 +49,13 @@ docker-compose up -d
 API будет доступен по адресу: http://127.0.0.1:8000/api/v1/
 
 
-2. #### Запуск тестов и базы для тестирования с помощью Docker-compose
+2. ### Запуск тестов и базы для тестирования с помощью Docker-compose
 ```
 docker-compose -f docker-compose-tests.yml up
 ```
 Результаты тестирования будут выведены в терминал.
 
-### Запуск приложения вручную
+## Запуск приложения вручную
 
 Для разработки использовался Python3.11
 
@@ -88,7 +88,7 @@ docker start pg-restaurant;
 uvicorn app.main:app 
 ```
 
-#### Результаты тестирование в Postman 
+## Результаты тестирование в Postman 
 <img src="docs/postman_test_results.png" alt="postman test results 100%">
 
 
