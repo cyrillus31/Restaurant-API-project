@@ -42,7 +42,7 @@ API будет доступен по адресу: http://127.0.0.1:8000/api/v1/
 
 2. Запуск тестов и базы для тестирования с помощью Docker-compose
 ```
-docker-compose -f docker-compose-tests.yml
+docker-compose -f docker-compose-tests.yml up
 ```
 Результаты тестирования будут выведены в терминал.
 
