@@ -44,7 +44,7 @@ Restaurant
 └── Menu 2  
     └── Submenu 3
 ```
-[link to this ASCII Tree generator](https://tree.nathanfriend.io/?s=(%27options!(%27fancy!true~fullPath5~trailingSlash5~rootDot5)~6(%276%27Restaurant-M41.10102.203-M42.3-%27)~version!%271%27)*%20%20-%5Cn*.-*Subm40-**Dish%204enu%205!false6source!%016540.-*)
+[link to this ASCII Tree generator](https://tree.nathanfriend.io/?s=(%27options!(%27fancy!true~fullPath5~trailingSlash5~rootDot5)~6(%276%27Restaurant-M41.10102.203-M42.3-%27)~version!%271%27)*%20%20-%5Cn*.-*Subm40-**Dish%204enu%205!false6source!%016540.-*)  
 <br>БД заполняется фикстурами и проверяется правильность значений, передаваемых в полях `submenu_count` и `dish_count` в JSON-ответах на GET запросы к различным меню и подменю. <br> <br>
 
 
