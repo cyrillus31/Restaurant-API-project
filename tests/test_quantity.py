@@ -23,11 +23,13 @@ def test_submenus_quantitiy_in_menu(
 
     res = client.get(f"{PREFIX}/menus/{menu_id}")
     db_submenus_count = (
-        session.query(models.Menu)
-        .join(models.Submenu)
-        .filter(models.Menu.id == models.Submenu.menu_id)
+        session.query(models.Submenu)
+        .join(models.Menu)
+        .filter(models.Submenu.menu_id == menu_id)
         .all()
     )
+
+    print(len(db_submenus_count), res.json())
     assert len(db_submenus_count) == res.json()["submenus_count"]
 
 
@@ -56,6 +58,7 @@ def test_dishes_quantitiy_in_menu(
         .filter(models.Submenu.menu_id == menu_id)
         .all()
     )
+    print(len(db_dishes_count), res.json())
     assert len(db_dishes_count) == res.json()["dishes_count"]
 
 
@@ -86,4 +89,6 @@ def test_dishes_quantitiy_in_submenu(
         )
         .all()
     )
+
+    print(len(db_dishes_count), res.json())
     assert len(db_dishes_count) == res.json()["dishes_count"]
