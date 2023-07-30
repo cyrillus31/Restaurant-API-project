@@ -2,18 +2,17 @@ version: '3'
 services:
   api:
     build: .
+    command: pytest -v
     depends_on:
       - db
     ports:
       - '8000:8000'
-    ignore:
-      - test/
 
   db:
     image: postgres:15.1-alpine
     environment:
       TZ: 'Europe/Moscow'
       POSTGRES_PASSWORD: 'password'
-      POSTGRES_DB: 'data'
+      POSTGRES_DB: 'data_test'
     expose:
       - '5432'

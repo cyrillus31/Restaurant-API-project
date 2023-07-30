@@ -1,0 +1,6 @@
+**/__*__
+**/venv
+**/.vscode
+**/.idea
+**/*.sh
+**/.pytest_cache
