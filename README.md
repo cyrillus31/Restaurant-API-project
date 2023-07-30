@@ -41,7 +41,7 @@ CRUD REST API ресторана, содержащий слеудующие су
 |API  | python:3.10-slim     |
 |DB   | postgres:15.1-alpine | 
 
-1. Запуск приложения с помощью Docker-compose
+1. #### Запуск приложения с помощью Docker-compose
 
 ```
 docker-compose up -d
@@ -49,7 +49,7 @@ docker-compose up -d
 API будет доступен по адресу: http://127.0.0.1:8000/api/v1/
 
 
-2. Запуск тестов и базы для тестирования с помощью Docker-compose
+2. #### Запуск тестов и базы для тестирования с помощью Docker-compose
 ```
 docker-compose -f docker-compose-tests.yml up
 ```
