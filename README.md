@@ -55,7 +55,7 @@ Restaurant
 |API  | python:3.10-slim     |
 |DB   | postgres:15.1-alpine |   
 
-<br><br>
+
 ### 1. Запуск приложения с помощью Docker-compose
 
 ```
