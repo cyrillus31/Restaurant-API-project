@@ -31,15 +31,15 @@ CRUD REST API ресторана, содержащий слеудующие су
 - количества подменю и блюд относящихся к определенному основному меню;
 - количества блюд относящихся к определенному подменю.
 
-Restaurant
-├── Menu 1
-│   ├── Submenu 1
-│   │   ├── Dish 1
-│   │   └── Dish 2
-│   └── Submenu 2
-│       └── Dish 3
-└── Menu 2
-    └── Submenu 3
+Restaurant  
+├── Menu 1  
+│   ├── Submenu 1  
+│   │   ├── Dish 1  
+│   │   └── Dish 2  
+│   └── Submenu 2  
+│       └── Dish 3  
+└── Menu 2  
+    └── Submenu 3  
 
 <br><br>
 
