@@ -32,7 +32,7 @@ def delete_submenu(menu_id, id, db: Session = Depends(get_db)):
 
     crud.delete_submenu_by_id(db, id)
 
-    return {"status": True, "message": "The menu has been deleted"}
+    return {"status": True, "message": "The submenu has been deleted"}
 
 
 @router.get(
