@@ -6,10 +6,10 @@ from . import models
 from .database import engine
 from .config import settings
 
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
-from redis import asyncio as aioredis
+# from fastapi_cache import FastAPICache
+# from fastapi_cache.backends.redis import RedisBackend
+# from fastapi_cache.decorator import cache
+# from redis import asyncio as aioredis
 
 # create database
 if not database_exists(engine.url):
@@ -24,8 +24,6 @@ app = FastAPI()
 app.include_router(menus.router)
 app.include_router(submenus.router)
 app.include_router(dishes.router)
-
-
 
 
 @app.get("/api/v1/")

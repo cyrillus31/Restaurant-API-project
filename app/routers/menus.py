@@ -7,25 +7,28 @@ from ..services import MenuService
 from .. import schemas, crud
 from ..database import get_db
 
+from starlette.requests import Request
+from starlette.responses import Response
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 
-
 router = APIRouter(prefix="/api/v1/menus", tags=["Menus"])
 
 
 @router.on_event("startup")
-def startup():
+async def startup():
     redis = aioredis.from_url(
-        f'redis://{settings.redis_host}')
+        "redis://localhost", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
-def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
+# @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
+@router.post("/", status_code=status.HTTP_201_CREATED)
+async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
     return menu.create(menu_data)
+
 
 # @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
 # def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
@@ -83,8 +86,8 @@ def get_menu(id, menu: MenuService = Depends()):
     # return db_menu
 
 @router.patch("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-def update_menu(id, menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
-    return menu.update(menu_data, id)
+def update_menu(menu_data: schemas.MenuCreate, id, menu: MenuService = Depends()):
+    return menu.update(menu_data, id=id)
 
 
 # @router.patch("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
