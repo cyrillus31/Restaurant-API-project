@@ -1,13 +1,26 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
+from ..config import settings
 # from ..repositories import MenuRepository
 from ..services import MenuService
 from .. import schemas, crud
 from ..database import get_db
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+from redis import asyncio as aioredis
+
 
 router = APIRouter(prefix="/api/v1/menus", tags=["Menus"])
+
+
+@router.on_event("startup")
+def startup():
+    redis = aioredis.from_url(
+        f'redis://{settings.redis_host}')
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)

@@ -94,10 +94,11 @@ DATABASE_HOSTNAME=db
 DATABASE_HOSTNAME=127.0.0.1
 ```
 
-3. Установить Docker самостоятельно. Затем требуется скачать образ Postgres:Alpine и запустить контейнер. Это можно сделать с помощью следущих Docker команд. 
+3. Установить Docker самостоятельно. Затем требуется скачать образы Postgres:Alpine и redis-stack:latest, а затем запустить контейнер. Это можно сделать с помощью следущих Docker команд. 
 ```console
 docker run --name pg-restaurant -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=data -e TZ=Europe/Moscow --restart=always -d postgres:15.1-alpine;
 docker start pg-restaurant;
+docker run -p 6379:6379 -it redis/redis-stack:latest
 ```
 Порт базы контейнера 5432 прокидывается на порт машины 5432.
 
