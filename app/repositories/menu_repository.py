@@ -5,7 +5,7 @@ from .. import crud, models, schemas
 from ..database import get_db
 
 
-class MenuRepository():
+class MenuRepository:
     orm_model = models.Menu
     schema = schemas.MenuCreate
 

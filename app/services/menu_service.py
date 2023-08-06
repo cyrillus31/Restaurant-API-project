@@ -12,7 +12,7 @@ class MenuService:
     def __init__(self, database_repository: MenuRepository = Depends(), ) -> None:
         self.database_repository = database_repository
         self.notificiation = NotificationRepository('menu')
-        self.cache_repository = MenuCacheRepository
+        self.cache_repository = MenuCacheRepository('menu', 'menus')
 
     def create(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         new_menu = self.database_repository.add(menu_data, **kwargs)

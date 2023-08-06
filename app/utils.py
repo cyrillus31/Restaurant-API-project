@@ -27,6 +27,6 @@ def dish2dict(model: models.Submenu) -> dict:
         'id': model.id,
         'description': model.description,
         'title': model.title,
-        'price': model.dishes_count,
+        'price': model.price,
     }
     return result

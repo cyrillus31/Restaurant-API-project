@@ -10,23 +10,33 @@ cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
 
 class MenuCacheRepository:
-    object = 'menu'
-    objects = 'menus'
-    orm_model = models.Menu
-    to_dict_func = menu2dict
+    # object = 'menu'
+    # objects = 'menus'
+    # orm_model = models.Menu
+    # to_dict_func = menu2dict
 
-    @classmethod
-    def get(cls, id: str, item: str = object, **kwargs) -> dict | None:
-        cached_response = cache.get(f'{item}:{id}')
+    def __init__(self, object, objects):
+        self.object = object
+        self.objects = objects
+
+        # choose a function to convert
+        if object == 'menu':
+            self.to_dict_func = menu2dict
+        if object == 'submenu':
+            self.to_dict_func = submenu2dict
+        if object == 'dish':
+            self.to_dict_func = dish2dict
+
+    def get(self, id: str, **kwargs) -> dict | None:
+        cached_response = cache.get(f'{self.object}:{id}')
         if cached_response:
             return json.loads(cached_response)
         return None
 
-    @classmethod
-    def get_all(cls, item: str = objects, **kwargs) -> list[dict | None]:
+    def get_all(self, **kwargs) -> list[dict | None]:
 
         # generate key from kwargs
-        key = f'{item}'
+        key = f'{self.objects}'
         for k in kwargs:
             key += str(kwargs[k])
 
@@ -36,21 +46,19 @@ class MenuCacheRepository:
             return json.loads(cached_response)
         return []
 
-    @classmethod
-    def add(cls, id: str, response_orm_model: models.Menu | models.Submenu | models.Dish | None, item: str = object) -> None:
-        response_dict = cls.to_dict_func(response_orm_model)  # type: ignore
+    def add(self, id: str, response_orm_model: models.Menu | models.Submenu | models.Dish | None) -> None:
+        response_dict = self.to_dict_func(response_orm_model)  # type: ignore
         value = json.dumps(response_dict)
-        key = f'{item}:{id}'
+        key = f'{self.object}:{id}'
         print('cache created')
         cache.set(key, value, ex=60)
 
-    @classmethod
-    def add_list(cls, response_orm_model_list: list[models.Menu | models.Submenu | models.Dish | None], item: str = objects, **kwargs) -> None:
-        values = [cls.to_dict_func(one_model)  # type: ignore
+    def add_list(self, response_orm_model_list: list[models.Menu | models.Submenu | models.Dish | None], **kwargs) -> None:
+        values = [self.to_dict_func(one_model)  # type: ignore
                   for one_model in response_orm_model_list]
 
         # generate key from kwargs
-        key = f'{item}:'
+        key = f'{self.objects}:'
         for k in kwargs:
             key = key + str(kwargs[k])
 
@@ -66,14 +74,16 @@ class MenuCacheRepository:
 
 
 class SubmenuCacheRepository(MenuCacheRepository):
-    object = 'submenu'
-    objects = 'submenus'
-    orm_model = models.Submenu
-    to_dict_func = submenu2dict
+    pass
+    # object = 'submenu'
+    # objects = 'submenus'
+    # orm_model = models.Submenu
+    # to_dict_func = submenu2dict
 
 
 class DishCacheRepository(MenuCacheRepository):
-    object = 'dish'
-    objects = 'dishes'
-    orm_model = models.Dish
-    to_dict_func = dish2dict
+    pass
+    # object = 'dish'
+    # objects = 'dishes'
+    # orm_model = models.Dish
+    # to_dict_func = dish2dict
