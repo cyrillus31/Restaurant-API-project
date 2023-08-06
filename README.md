@@ -59,8 +59,9 @@ Restaurant
 
 
 ### Pre-commit checks
-В проекте везде использовались тайпхинтинги с последующей проверкой [MyPy](https://github.com/python/mypy)
+В проекте везде использовались тайпхинтинги с последующей проверкой [MyPy](https://github.com/python/mypy).
 Полный список всех чеков представлен ниже:
+
 <img src="docs/pre-commit-hooks-results.png" alt="postman test results 100%">
 
 
@@ -81,7 +82,7 @@ docker-compose up -d
 API будет доступен по адресу: http://127.0.0.1:8000/api/v1/
 <br><br>
 
-### 2. Запуск тестов и базы для тестирования с помощью Docker-compose
+### 2. Запуск тестов и баз данных для тестирования с помощью Docker-compose
 ```
 docker-compose -f docker-compose-tests.yml up
 ```
