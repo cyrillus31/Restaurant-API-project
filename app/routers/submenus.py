@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from .. import schemas, crud
 from ..database import get_db
+from ..services import SubmenuService
 
 
 router = APIRouter(
@@ -12,16 +13,8 @@ router = APIRouter(
 @router.post(
     "/", status_code=status.HTTP_201_CREATED, response_model=schemas.SubmenuOut
 )
-def create_submenu(menu_id, submenu: schemas.MenuCreate, db: Session = Depends(get_db)):
-    db_menu = crud.get_submenu_by_title(db, title=submenu.title)
-
-    if db_menu:
-        raise HTTPException(
-            status_code=400, detail="Submenu with this title already exists"
-        )
-    submenu = crud.create_submenu(menu_id=menu_id, db=db, submenu=submenu)
-
-    return submenu
+def create_submenu(menu_id, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends()):
+    return submenu.create(submenu_data, menu_id=menu_id)
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
