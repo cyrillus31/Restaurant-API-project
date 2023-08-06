@@ -7,7 +7,7 @@
 - [Результаты тестирование в Postman](#результаты-тестирование-в-Postman)
 
 
-### Технические задания 
+### Технические задания
 1. <a href="assignment/Homework_1.md"> <b>Требования к разрабатываемому API ресторана</b> </a>
 
 2. <a href="assignment/Homework_2.md"> <b>Требования к интеграционному тестировнию API ресторана</b> </a>
@@ -19,14 +19,14 @@ CRUD REST API ресторана, содержащий слеудующие су
 - Подменю/ Submenu
 - Блюдо/ Dish
 
-Реализована возможность создавать, считывать, обновлять и удалять эти сущности. Настроено взаимодействие с СУБД PostgreSQL в Docker контейнере. В окружение контейнера прокинуты московская таймзона и необходимые для создания базы данных переменные. Файл [.env](/.env) используется для хранения переменных окружения, необходимых для подключения к БД внутри Docker контейнера. Убрал из .gitignore упоминание `.env` из соображений удобства проверки преподавателем.  
+Реализована возможность создавать, считывать, обновлять и удалять эти сущности. Настроено взаимодействие с СУБД PostgreSQL в Docker контейнере. В окружение контейнера прокинуты московская таймзона и необходимые для создания базы данных переменные. Файл [.env](/.env) используется для хранения переменных окружения, необходимых для подключения к БД внутри Docker контейнера. Убрал из .gitignore упоминание `.env` из соображений удобства проверки преподавателем.
 <br><br>
 
 ### Тестирование
 
-Для интеграционного тестирования работы API использована библиотека [Pytest](https://docs.pytest.org/).  
+Для интеграционного тестирования работы API использована библиотека [Pytest](https://docs.pytest.org/).
 
-Реализовны 33 синхронных CRUD теста для всех эндпоинтов. Проверка Read, Update, Delete методов реализована с помощью фикстур, расположенных в файле [conftest.py](tests/conftest.py), которые создают модели тестируемых ресурсов напрямую в тестовой БД.  
+Реализовны 33 синхронных CRUD теста для всех эндпоинтов. Проверка Read, Update, Delete методов реализована с помощью фикстур, расположенных в файле [conftest.py](tests/conftest.py), которые создают модели тестируемых ресурсов напрямую в тестовой БД.
 
 Реализован [тестовый сценарий](tests/test_quantity.py), проверяющий правильность подсчета:
 - количества подменю и блюд относящихся к определенному основному меню;
@@ -34,14 +34,14 @@ CRUD REST API ресторана, содержащий слеудующие су
 
 #### Структура БД, используемая для тестирования
 ```
-Restaurant  
-├── Menu 1  
-│   ├── Submenu 1  
-│   │   ├── Dish 1  
-│   │   └── Dish 2  
-│   └── Submenu 2  
-│       └── Dish 3  
-└── Menu 2  
+Restaurant
+├── Menu 1
+│   ├── Submenu 1
+│   │   ├── Dish 1
+│   │   └── Dish 2
+│   └── Submenu 2
+│       └── Dish 3
+└── Menu 2
     └── Submenu 3
 ```
 [link to this ASCII Tree generator](https://tree.nathanfriend.io/?s=(%27options!(%27fancy!true~fullPath5~trailingSlash5~rootDot5)~6(%276%27Restaurant-M41.10102.203-M42.3-%27)~version!%271%27)*%20%20-%5Cn*.-*Subm40-**Dish%204enu%205!false6source!%016540.-*)
@@ -55,7 +55,7 @@ Restaurant
 |     |Образы для Docker     |
 |-----|----------------------|
 |API  | python:3.10-slim     |
-|DB   | postgres:15.1-alpine |   
+|DB   | postgres:15.1-alpine |
 
 
 ### 1. Запуск приложения с помощью Docker-compose
@@ -80,7 +80,7 @@ docker-compose -f docker-compose-tests.yml up
 1. Рекомендуется развернуть виртуальное окружение и установить в него все зависимости.
 
 ```console
-python3 -m venv venv 
+python3 -m venv venv
 source venv/bin/activate # на Linux
 pip install -r requirements.txt
 ```
@@ -94,7 +94,7 @@ DATABASE_HOSTNAME=db
 DATABASE_HOSTNAME=127.0.0.1
 ```
 
-3. Установить Docker самостоятельно. Затем требуется скачать образы Postgres:Alpine и redis-stack:latest, а затем запустить контейнер. Это можно сделать с помощью следущих Docker команд. 
+3. Установить Docker самостоятельно. Затем требуется скачать образы Postgres:Alpine и redis-stack:latest, а затем запустить контейнер. Это можно сделать с помощью следущих Docker команд.
 ```console
 docker run --name pg-restaurant -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=data -e TZ=Europe/Moscow --restart=always -d postgres:15.1-alpine;
 docker start pg-restaurant;
@@ -104,12 +104,8 @@ docker run -p 6379:6379 -it redis/redis-stack:latest
 
 4. Для запуска приложения рекомендуется использовать ASGI веб сервер [uvicorn](https://www.uvicorn.org/).
 ```console
-uvicorn app.main:app 
+uvicorn app.main:app
 ```
 <br><br>
-## Результаты тестирование в Postman 
+## Результаты тестирование в Postman
 <img src="docs/postman_test_results.png" alt="postman test results 100%">
-
-
-
-  

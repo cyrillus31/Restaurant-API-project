@@ -1,29 +1,32 @@
 from abc import ABC, abstractclassmethod
-from typing import Union
 
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, status
 
-from .. import models, schemas
+from .. import crud, models, schemas
 from ..database import get_db
-from .. import crud
 
 
 class AbstractRepository(ABC):
     @abstractclassmethod
-    def get(self): ...
+    def get(self):
+        ...
 
     @abstractclassmethod
-    def get_all(self): ...
+    def get_all(self):
+        ...
 
     @abstractclassmethod
-    def add(self): ...
+    def add(self):
+        ...
 
     @abstractclassmethod
-    def update(self): ...
+    def update(self):
+        ...
 
     @abstractclassmethod
-    def delete(self): ...
+    def delete(self):
+        ...
 
 
 class MenuRepository(AbstractRepository):
@@ -33,8 +36,8 @@ class MenuRepository(AbstractRepository):
     def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
         self.orm_model = models.Menu
-        self.detail_404 = "menu not found"
-        self.detail_400 = "Menu with this title already exists"
+        self.detail_404 = 'menu not found'
+        self.detail_400 = 'Menu with this title already exists'
 
     def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[orm_model]:
         menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
@@ -53,7 +56,7 @@ class MenuRepository(AbstractRepository):
             self.orm_model).filter_by(**kwargs).first()
         if not menu:
             raise HTTPException(
-                status_code=404, detail=f"{self.detail_404}")
+                status_code=404, detail=f'{self.detail_404}')
 
         # count submenus and dishes
         menu.submenus_count = crud.get_menu_submenus_count(self.db, menu.id)
@@ -65,7 +68,7 @@ class MenuRepository(AbstractRepository):
             self.orm_model.title == menu.title).filter_by(**kwargs).first()
         if menu_exists:
             raise HTTPException(
-                status_code=400, detail=f"{self.detail_400}"
+                status_code=400, detail=f'{self.detail_400}'
             )
         new_menu = self.orm_model(**menu.dict(), **kwargs)
         self.db.add(new_menu)
@@ -77,7 +80,7 @@ class MenuRepository(AbstractRepository):
         menu_exists = self.get(id=id, **kwargs)
         if not menu_exists:
             raise HTTPException(
-                status_code=404, detail=f"{self.detail_404}")
+                status_code=404, detail=f'{self.detail_404}')
         self.db.query(self.orm_model).filter(
             self.orm_model.id == id).delete()
         self.db.commit()
@@ -88,7 +91,7 @@ class MenuRepository(AbstractRepository):
             self.orm_model.id == id).filter_by(**kwargs).first()
         if not menu_exists:
             raise HTTPException(
-                status_code=404, detail=f"{self.detail_404}")
+                status_code=404, detail=f'{self.detail_404}')
 
         update_menu = self.db.query(
             self.orm_model).filter(self.orm_model.id == id)

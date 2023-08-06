@@ -1,10 +1,8 @@
 from sqlalchemy.orm import Session
 
-
 from . import models, schemas
 
-
-#######Menu Operations############
+# Menu Operations
 
 
 def create_menu(db: Session, menu: schemas.MenuCreate):
@@ -47,7 +45,7 @@ def update_menu_by_id(db: Session, menu: schemas.MenuCreate, id: str):
     return update_menu.first()
 
 
-#######Submenu operations########
+# Submenu operations
 
 
 def create_submenu(menu_id, db: Session, submenu: schemas.MenuCreate):
@@ -102,7 +100,7 @@ def update_submenu_by_id(db: Session, submenu: schemas.MenuCreate, id: str):
     return update_menu.first()
 
 
-#######Dishes operations ########
+# Dishes operations
 
 
 def create_dish(submenu_id, db: Session, dish: schemas.MenuCreate):
