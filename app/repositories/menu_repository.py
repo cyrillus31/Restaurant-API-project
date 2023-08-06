@@ -1,4 +1,5 @@
-from abc import ABC, abstractclassmethod
+# from abc import ABC, abstractclassmethod
+# from typing import Any
 
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -6,30 +7,33 @@ from sqlalchemy.orm import Session
 from .. import crud, models, schemas
 from ..database import get_db
 
+# class AbstractRepository(ABC):
+# def __init__(self, *args: Any, **kwargs: Any) -> None:
+# raise NotImplementedError
 
-class AbstractRepository(ABC):
-    @abstractclassmethod
-    def get(self):
-        ...
+# @abstractclassmethod
+# def get(self, *args: Any, **kwargs: Any):
+# raise NotImplementedError
 
-    @abstractclassmethod
-    def get_all(self):
-        ...
+# @abstractclassmethod
+# def get_all(self, *args: Any, **kwargs: Any):
+# raise NotImplementedError
 
-    @abstractclassmethod
-    def add(self):
-        ...
+# @abstractclassmethod
+# def add(self, *args: Any, **kwargs: Any):
+# raise NotImplementedError
 
-    @abstractclassmethod
-    def update(self):
-        ...
+# @abstractclassmethod
+# def update(self, *args: Any, **kwargs: Any):
+# raise NotImplementedError
 
-    @abstractclassmethod
-    def delete(self):
-        ...
+# @abstractclassmethod
+# def delete(self, id: str, **kwargs) -> None:
+# raise NotImplementedError
 
 
-class MenuRepository(AbstractRepository):
+# class MenuRepository(AbstractRepository):
+class MenuRepository():
     orm_model = models.Menu
     schema = schemas.MenuCreate
 
@@ -63,7 +67,7 @@ class MenuRepository(AbstractRepository):
         menu.dishes_count = crud.get_menus_dishes_count(self.db, menu.id)
         return menu
 
-    def add(self, menu: schema, **kwargs) -> orm_model:
+    def add(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         menu_exists = self.db.query(self.orm_model).filter(
             self.orm_model.title == menu.title).filter_by(**kwargs).first()
         if menu_exists:
@@ -85,7 +89,7 @@ class MenuRepository(AbstractRepository):
             self.orm_model.id == id).delete()
         self.db.commit()
 
-    def update(self, menu: schema, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
+    def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         # menu_exists = self.get(id=id)
         menu_exists = self.db.query(self.orm_model).filter(
             self.orm_model.id == id).filter_by(**kwargs).first()

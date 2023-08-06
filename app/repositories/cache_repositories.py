@@ -16,7 +16,7 @@ class MenuCacheRepository:
     to_dict_func = menu2dict
 
     @classmethod
-    def get(cls, id: str, item: str = object, **kwargs) -> dict:
+    def get(cls, id: str, item: str = object, **kwargs) -> dict | None:
         cached_response = cache.get(f'{item}:{id}')
         if cached_response:
             return json.loads(cached_response)
@@ -38,7 +38,7 @@ class MenuCacheRepository:
 
     @classmethod
     def add(cls, id: str, response_orm_model: models.Menu | models.Submenu | models.Dish | None, item: str = object) -> None:
-        response_dict = cls.to_dict_func(response_orm_model)
+        response_dict = cls.to_dict_func(response_orm_model)  # type: ignore
         value = json.dumps(response_dict)
         key = f'{item}:{id}'
         print('cache created')
@@ -46,7 +46,7 @@ class MenuCacheRepository:
 
     @classmethod
     def add_list(cls, response_orm_model_list: list[models.Menu | models.Submenu | models.Dish | None], item: str = objects, **kwargs) -> None:
-        values = [cls.to_dict_func(one_model)
+        values = [cls.to_dict_func(one_model)  # type: ignore
                   for one_model in response_orm_model_list]
 
         # generate key from kwargs
