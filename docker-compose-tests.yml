@@ -5,6 +5,7 @@ services:
     command: pytest -v
     depends_on:
       - db
+      - cache
     ports:
       - '8000:8000'
 
@@ -16,3 +17,9 @@ services:
       POSTGRES_DB: 'data_test'
     expose:
       - '5432'
+  cache:
+    image: redis/redis-stack:latest
+    ports:
+      - '6379:6379'
+    depends_on:
+      - db
