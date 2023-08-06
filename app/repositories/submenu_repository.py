@@ -20,8 +20,8 @@ class SubmenuRepository(MenuRepository):
         self.detail_404 = "submenu not found"
         self.detail_400 = "Submenu with this title already exists"
 
-    def get_all(self, skip: int = 0, limit: int = 100) -> list[orm_model]:
-        menus = self.db.query(self.orm_model).offset(
+    def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[orm_model]:
+        menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
             skip).limit(limit).all()
 
         # count submenus and dishes

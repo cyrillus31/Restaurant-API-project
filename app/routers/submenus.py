@@ -28,7 +28,7 @@ def delete_submenu(menu_id, id, submenu: SubmenuService = Depends()):
     response_model=list[schemas.SubmenuOut],
 )
 def read_submenus(menu_id, skip: int = 0, limit: int = 100, submenu: SubmenuService = Depends(),):
-    return submenu.get_all(menu_id)
+    return submenu.get_all(menu_id=menu_id, skip=skip, limit=limit, )
 
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut)
