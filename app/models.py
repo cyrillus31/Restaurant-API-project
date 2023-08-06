@@ -5,7 +5,10 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text  # to insert sql functions as a text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from .database import Base
+from .database import Base, get_db
+from . import crud
+
+db = get_db()
 
 
 class Menu(Base):
@@ -36,7 +39,8 @@ class Submenu(Base):
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
-    menu_id = Column(String, ForeignKey("menu.id", ondelete="CASCADE"), nullable=False)
+    menu_id = Column(String, ForeignKey(
+        "menu.id", ondelete="CASCADE"), nullable=False)
 
     dishes_relation = relationship("Dish")
     dishes_count = 0

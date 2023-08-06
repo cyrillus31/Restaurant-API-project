@@ -5,7 +5,8 @@ from .. import schemas, crud
 from ..database import get_db
 
 
-router = APIRouter(prefix="/api/v1/menus/{menu_id}/submenus", tags=["Submenus"])
+router = APIRouter(
+    prefix="/api/v1/menus/{menu_id}/submenus", tags=["Submenus"])
 
 
 @router.post(

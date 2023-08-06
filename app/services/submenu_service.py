@@ -7,18 +7,18 @@ from .. import schemas
 from .. import models
 
 
-class MenuService:
+class SubmenuService:
     def __init__(self, database_repository: MenuRepository = Depends(), ):
         self.database_repository = database_repository
         self.notificiation = NotificationRepository
 
-    def create(self, menu_data: schemas.MenuCreate, **kwargs) -> models.Menu:
-        new_menu = self.database_repository.add(menu_data, **kwargs)
+    def create(self, menu_data: schemas.MenuCreate) -> models.Menu:
+        new_menu = self.database_repository.add(menu_data)
         MenuCacheRepository.deinitialize_all()
         return new_menu
 
-    def delete(self, id, **kwargs) -> None:
-        self.database_repository.delete(id, **kwargs)
+    def delete(self, id) -> None:
+        self.database_repository.delete(id)
         MenuCacheRepository.deinitialize_all()
         return self.notificiation.delete_success()
 
@@ -42,7 +42,7 @@ class MenuService:
         MenuCacheRepository.add(menu.id, menu)  # add dict to cache
         return menu
 
-    def update(self, menu_data: schemas.MenuCreate, id, **kwargs) -> Union[models.Menu | dict]:
-        update_menu = self.database_repository.update(menu_data, id, **kwargs)
+    def update(self, menu_data: schemas.MenuCreate, id) -> Union[models.Menu | dict]:
+        update_menu = self.database_repository.update(menu_data, id)
         MenuCacheRepository.deinitialize_all()
         return update_menu

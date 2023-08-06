@@ -51,10 +51,10 @@ class SubmenuRepository(AbstractRepository):
         menu.dishes_count = crud.get_menus_dishes_count(self.db, menu.id)
         return menu
 
-    def add(self, menu: schemas.MenuCreate) -> models.Menu:
-        menu_exists = self.db.query(models.Menu).filter(
+    def add(self, menu_id, submenu: schemas.MenuCreate) -> models.Menu:
+        submenu_exists = self.db.query(models.Submenu).filter(
             models.Menu.title == menu.title).first()
-        if menu_exists:
+        if submenu_exists:
             raise HTTPException(
                 status_code=400, detail="Menu with this title already exists"
             )
