@@ -18,13 +18,13 @@ class MenuService:
         self.notificiation = NotificationRepository
 
     def create(self, menu_data: schemas.MenuCreate) -> dict:
-        cached_response = MenuCacheRepository.get(menu_data)
-        if cached_response:
-            print("cahce hit")
-            return json.loads(cached_response)
-        else:
-            new_menu = self.database_repository.add(menu_data)
-            MenuCacheRepository.set(menu_data, new_menu)
+        # cached_response = MenuCacheRepository.get(menu_data)
+        # if cached_response:
+        # print("cahce hit")
+        # return json.loads(cached_response)
+        # else:
+        new_menu = self.database_repository.add(menu_data)
+        # MenuCacheRepository.set(menu_data, new_menu)
         return new_menu
 
     def delete(self, id) -> None:
@@ -33,11 +33,20 @@ class MenuService:
         return self.notificiation.delete_success()
 
     def get_all(self, **kwargs) -> list[models.Menu]:
+        cached_response = MenuCacheRepository.get_all()
+        if cached_response:
+            return cached_response
         all_menus = self.database_repository.get_all(**kwargs)
         return all_menus
 
     def get(self, **kwargs) -> models.Menu:
-        return self.database_repository.get(**kwargs)
+        cached_response = MenuCacheRepository.get(**kwargs)
+        if cached_response:  # if cache exists return cached response
+            return cached_response
+        menu = self.database_repository.get(
+            **kwargs)  # convert ORM model into dict
+        MenuCacheRepository.add(menu2dict(menu))  # add dict to cache
+        return menu
 
     def update(self, menu_data: schemas.MenuCreate, id) -> models.Menu:
         return self.database_repository.update(menu_data, id)
