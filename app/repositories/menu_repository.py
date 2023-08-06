@@ -1,38 +1,10 @@
-# from abc import ABC, abstractclassmethod
-# from typing import Any
-
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from .. import crud, models, schemas
 from ..database import get_db
 
-# class AbstractRepository(ABC):
-# def __init__(self, *args: Any, **kwargs: Any) -> None:
-# raise NotImplementedError
 
-# @abstractclassmethod
-# def get(self, *args: Any, **kwargs: Any):
-# raise NotImplementedError
-
-# @abstractclassmethod
-# def get_all(self, *args: Any, **kwargs: Any):
-# raise NotImplementedError
-
-# @abstractclassmethod
-# def add(self, *args: Any, **kwargs: Any):
-# raise NotImplementedError
-
-# @abstractclassmethod
-# def update(self, *args: Any, **kwargs: Any):
-# raise NotImplementedError
-
-# @abstractclassmethod
-# def delete(self, id: str, **kwargs) -> None:
-# raise NotImplementedError
-
-
-# class MenuRepository(AbstractRepository):
 class MenuRepository():
     orm_model = models.Menu
     schema = schemas.MenuCreate
