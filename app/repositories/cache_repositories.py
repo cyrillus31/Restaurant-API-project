@@ -10,10 +10,6 @@ cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
 
 class MenuCacheRepository:
-    # object = 'menu'
-    # objects = 'menus'
-    # orm_model = models.Menu
-    # to_dict_func = menu2dict
 
     def __init__(self, object, objects):
         self.object = object
@@ -75,15 +71,7 @@ class MenuCacheRepository:
 
 class SubmenuCacheRepository(MenuCacheRepository):
     pass
-    # object = 'submenu'
-    # objects = 'submenus'
-    # orm_model = models.Submenu
-    # to_dict_func = submenu2dict
 
 
 class DishCacheRepository(MenuCacheRepository):
     pass
-    # object = 'dish'
-    # objects = 'dishes'
-    # orm_model = models.Dish
-    # to_dict_func = dish2dict
