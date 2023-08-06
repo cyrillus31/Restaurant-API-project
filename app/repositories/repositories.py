@@ -4,9 +4,9 @@ from typing import Union
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
 
-from . import models, schemas
-from .database import get_db
-from . import crud
+from .. import models, schemas
+from ..database import get_db
+from .. import crud
 
 
 class AbstractRepository(ABC):

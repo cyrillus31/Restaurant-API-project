@@ -4,4 +4,4 @@
 **/.idea
 **/*.sh
 **/.pytest_cache
-**/.env
+# **/.env
