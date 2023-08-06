@@ -71,3 +71,10 @@ class SubmenuCacheRepository(MenuCacheRepository):
     objects = "submenus"
     orm_model = models.Submenu
     to_dict_func = submenu2dict
+
+
+class DishCacheRepository(MenuCacheRepository):
+    object = "dish"
+    objects = "dishes"
+    orm_model = models.Dish
+    to_dict_func = dish2dict

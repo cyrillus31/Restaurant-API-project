@@ -1,10 +1,9 @@
-import logging
-
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
 from .. import schemas, crud
 from ..database import get_db
+from ..services import DishService
 
 
 router = APIRouter(
@@ -13,16 +12,8 @@ router = APIRouter(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DishOut)
-def create_dish(submenu_id, dish: schemas.DishCreate, db: Session = Depends(get_db)):
-    db_dish = crud.get_dish_by_title(db, title=dish.title)
-
-    if db_dish:
-        raise HTTPException(
-            status_code=400, detail="Dish with this title already exists"
-        )
-    dish = crud.create_dish(submenu_id=submenu_id, db=db, dish=dish)
-
-    return dish
+def create_dish(submenu_id, dish_data: schemas.DishCreate, dish: DishService = Depends()):
+    return dish.create(dish_data, submenu_id=submenu_id)
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
