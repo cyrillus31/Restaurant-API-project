@@ -40,12 +40,5 @@ def get_submenu(id, menu_id, submenu: SubmenuService = Depends()):
     "/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut
 )
 def update_submenu(
-    menu_id, id, submenu: schemas.MenuCreate, db: Session = Depends(get_db)
-):
-    db_submenu = crud.get_submenu_by_id(db, id)
-
-    if not db_submenu:
-        raise HTTPException(status_code=404, detail="menu not found")
-
-    updated_submenu = crud.update_submenu_by_id(db=db, submenu=submenu, id=id)
-    return updated_submenu
+        menu_id, id, submenu_data: schemas.MenuCreate, submenu: SubmenuService = Depends()):
+    return submenu.update(submenu_data, id, menu_id=menu_id)

@@ -4,7 +4,7 @@ from app.routers import submenus
 from app import schemas
 from app import models
 
-### CRUD testing
+# CRUD testing
 
 
 # Create testing
@@ -36,7 +36,8 @@ def test_get_submenu(session, client, PREFIX, test_menus, test_submenus):
     assert res.status_code == 200
     response_submenu = schemas.SubmenuOut(**res.json())
     db_submenu = (
-        session.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+        session.query(models.Submenu).filter(
+            models.Submenu.id == submenu_id).first()
     )
     assert response_submenu.title == db_submenu.title
     assert response_submenu.description == db_submenu.description
@@ -58,7 +59,8 @@ def test_read_submenus(session, client, PREFIX, test_menus, test_submenus):
         schemas.SubmenuOut(**submenu) for submenu in response_data
     ]
     submenus_of_menu_list = (
-        session.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all()
+        session.query(models.Submenu).filter(
+            models.Submenu.menu_id == menu_id).all()
     )
 
     assert res.status_code == 200
@@ -108,7 +110,7 @@ def test_update_submenu_not_exists(session, client, PREFIX, test_menus, test_sub
         f"{PREFIX}/menus/{menu_id}/submenus/9876543210", json=update_data
     )
     assert res.status_code == 404
-    assert res.json()["detail"] == "menu not found"
+    assert res.json()["detail"] == "submenu not found"
 
 
 # Delete testing
