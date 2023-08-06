@@ -5,10 +5,10 @@ import json
 import redis
 from redis_om import Field, JsonModel, Migrator
 
-from .config import settings
-from .utils import menu2dict, submenu2dict, dish2dict
-from . import schemas
-from . import models
+from ..config import settings
+from ..utils import menu2dict, submenu2dict, dish2dict
+from .. import schemas
+from .. import models
 
 cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 

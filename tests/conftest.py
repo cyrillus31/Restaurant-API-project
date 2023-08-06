@@ -9,7 +9,7 @@ from app.main import app
 from app.config import settings
 from app.database import get_db
 from app.database import Base
-from app.cache import MenuCacheRepository
+from app.repositories import MenuCacheRepository
 
 from app import models
 
