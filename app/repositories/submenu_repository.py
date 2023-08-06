@@ -35,7 +35,7 @@ class SubmenuRepository(MenuRepository):
             self.orm_model).filter_by(**kwargs).first()
         if not menu:
             raise HTTPException(
-                status_code=404, detail=f"{MenuRepository.detail_404}")
+                status_code=404, detail=f"{self.detail_404}")
 
         # count submenus and dishes
         menu.dishes_count = crud.get_sumbenus_dishes_count(self.db, menu.id)

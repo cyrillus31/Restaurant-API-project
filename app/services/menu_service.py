@@ -14,7 +14,7 @@ class MenuService:
 
     def __init__(self, database_repository: db_repository = Depends(), ):
         self.database_repository = database_repository
-        self.notificiation = NotificationRepository
+        self.notificiation = NotificationRepository("menu")
         self.cache_repository = MenuCacheRepository
 
     def create(self, menu_data: schema, **kwargs) -> orm_model:
@@ -28,17 +28,17 @@ class MenuService:
         return self.notificiation.delete_success()
 
     def get_all(self, **kwargs) -> list[orm_model | dict]:
-        cached_response = MenuCacheRepository.get_all()
+        cached_response = self.cache_repository.get_all(**kwargs)
         if cached_response:
             print("cache list hit")
             return cached_response
         all_menus = self.database_repository.get_all(**kwargs)
-        self.cache_repository.add_list(all_menus)
+        self.cache_repository.add_list(all_menus, **kwargs)
         return all_menus
 
     def get(self, **kwargs) -> Union[orm_model, dict]:
         print("looking for cache")
-        cached_response = MenuCacheRepository.get(**kwargs)
+        cached_response = self.cache_repository.get(**kwargs)
         if cached_response:  # if cache exists return cached response
             print("cache hit")
             return cached_response

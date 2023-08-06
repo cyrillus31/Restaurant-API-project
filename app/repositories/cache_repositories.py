@@ -27,8 +27,14 @@ class MenuCacheRepository:
         return None
 
     @classmethod
-    def get_all(cls, item: str = objects) -> list[dict | None]:
-        cached_response = cache.get(item)
+    def get_all(cls, item: str = objects, **kwargs) -> list[dict | None]:
+
+        # generate key from kwargs
+        key = f"{item}"
+        for k in kwargs:
+            key += str(kwargs[k])
+
+        cached_response = cache.get(key)
         print("cached_response list: ", cached_response)
         if cached_response:
             return json.loads(cached_response)
@@ -43,10 +49,15 @@ class MenuCacheRepository:
         cache.set(key, value, ex=60)
 
     @classmethod
-    def add_list(cls, response_orm_model_list: list[orm_model | None], item: str = objects) -> None:
+    def add_list(cls, response_orm_model_list: list[orm_model | None], item: str = objects, **kwargs) -> None:
         values = [cls.to_dict_func(one_model)
                   for one_model in response_orm_model_list]
+
+        # generate key from kwargs
         key = f"{item}"
+        for k in kwargs:
+            key += str(kwargs[k])
+
         print("cached list created")
         cache.set(key, json.dumps(values), ex=60)
 

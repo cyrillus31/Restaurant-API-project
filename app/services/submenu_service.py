@@ -15,7 +15,7 @@ class SubmenuService(MenuService):
 
     def __init__(self, database_repository: db_repository = Depends(), ):
         self.database_repository = database_repository
-        self.notificiation = NotificationRepository
+        self.notificiation = NotificationRepository("submenu")
         self.cache_repository = SubmenuCacheRepository
 
     # def create(self, menu_data: schemas.MenuCreate, **kwargs) -> models.Menu:

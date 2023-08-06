@@ -18,15 +18,8 @@ def create_submenu(menu_id, submenu_data: schemas.SubmenuCreate, submenu: Submen
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
-def delete_submenu(menu_id, id, db: Session = Depends(get_db)):
-    db_submenu = crud.get_submenu_by_id(db, id)
-
-    if not db_submenu:
-        raise HTTPException(status_code=404, detail="submenu not found")
-
-    crud.delete_submenu_by_id(db, id)
-
-    return {"status": True, "message": "The submenu has been deleted"}
+def delete_submenu(menu_id, id, submenu: SubmenuService = Depends()):
+    return submenu.delete(id, menu_id=menu_id)
 
 
 @router.get(
@@ -34,18 +27,8 @@ def delete_submenu(menu_id, id, db: Session = Depends(get_db)):
     status_code=status.HTTP_200_OK,
     response_model=list[schemas.SubmenuOut],
 )
-def read_submenus(
-    menu_id,
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db),
-    # response_model=list[schemas.SubmenuOut],
-):
-    submenus = crud.get_submenus(menu_id, db, skip=skip, limit=limit)
-    for db_submenu in submenus:
-        db_submenu.dishes_count = crud.get_sumbenus_dishes_count(db, menu_id)
-
-    return submenus
+def read_submenus(menu_id, skip: int = 0, limit: int = 100, submenu: SubmenuService = Depends(),):
+    return submenu.get_all(menu_id)
 
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut)
