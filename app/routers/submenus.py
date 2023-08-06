@@ -32,13 +32,8 @@ def read_submenus(menu_id, skip: int = 0, limit: int = 100, submenu: SubmenuServ
 
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut)
-def get_menu(id, db: Session = Depends(get_db)):
-    db_submenu = crud.get_submenu_by_id(db, id=id)
-
-    if not db_submenu:
-        raise HTTPException(status_code=404, detail="submenu not found")
-    db_submenu.dishes_count = crud.get_sumbenus_dishes_count(db, id)
-    return db_submenu
+def get_submenu(id, menu_id, submenu: SubmenuService = Depends()):
+    return submenu.get(id=id, menu_id=menu_id)
 
 
 @router.patch(

@@ -20,7 +20,7 @@ class MenuCacheRepository:
     to_dict_func = menu2dict
 
     @classmethod
-    def get(cls, id: str, item: str = object) -> dict:
+    def get(cls, id: str, item: str = object, **kwargs) -> dict:
         cached_response = cache.get(f"{item}:{id}")
         if cached_response:
             return json.loads(cached_response)
