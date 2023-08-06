@@ -1,3 +1,5 @@
+from typing import Union
+
 from fastapi import Depends
 
 from .. import models, schemas
@@ -9,12 +11,12 @@ class MenuService:
     orm_model = models.Menu
     db_repository = MenuRepository
 
-    def __init__(self, database_repository: db_repository = Depends(), ):
+    def __init__(self, database_repository: MenuRepository = Depends(), ) -> None:
         self.database_repository = database_repository
         self.notificiation = NotificationRepository('menu')
         self.cache_repository = MenuCacheRepository
 
-    def create(self, menu_data: schema, **kwargs) -> orm_model:
+    def create(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish:
         new_menu = self.database_repository.add(menu_data, **kwargs)
         self.cache_repository.deinitialize_all()
         return new_menu
@@ -24,16 +26,16 @@ class MenuService:
         self.cache_repository.deinitialize_all()
         return self.notificiation.delete_success()
 
-    def get_all(self, **kwargs) -> list[orm_model | dict]:
+    def get_all(self, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | dict | None]:
         cached_response = self.cache_repository.get_all(**kwargs)
         if cached_response:
             print('cache list hit')
             return cached_response
         all_menus = self.database_repository.get_all(**kwargs)
         self.cache_repository.add_list(all_menus, **kwargs)
-        return all_menus
+        return all_menus  # type: ignore
 
-    def get(self, **kwargs) -> orm_model | dict:
+    def get(self, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
         print('looking for cache')
         cached_response = self.cache_repository.get(**kwargs)
         if cached_response:  # if cache exists return cached response
@@ -44,7 +46,7 @@ class MenuService:
         self.cache_repository.add(menu.id, menu)  # add dict to cache
         return menu
 
-    def update(self, menu_data: schema, id, **kwargs) -> orm_model | dict:
+    def update(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
         update_menu = self.database_repository.update(menu_data, id, **kwargs)
         self.cache_repository.deinitialize_all()
         return update_menu

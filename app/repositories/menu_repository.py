@@ -39,7 +39,7 @@ class MenuRepository(AbstractRepository):
         self.detail_404 = 'menu not found'
         self.detail_400 = 'Menu with this title already exists'
 
-    def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[orm_model]:
+    def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | None]:
         menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
             skip).limit(limit).all()
 
@@ -85,7 +85,7 @@ class MenuRepository(AbstractRepository):
             self.orm_model.id == id).delete()
         self.db.commit()
 
-    def update(self, menu: schema, id: str, **kwargs) -> orm_model:
+    def update(self, menu: schema, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         # menu_exists = self.get(id=id)
         menu_exists = self.db.query(self.orm_model).filter(
             self.orm_model.id == id).filter_by(**kwargs).first()

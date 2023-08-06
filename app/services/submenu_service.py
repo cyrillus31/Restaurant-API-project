@@ -1,7 +1,11 @@
+from typing import Union
+
 from fastapi import Depends
 
 from .. import models, schemas
 from ..repositories import (
+    DishRepository,
+    MenuRepository,
     NotificationRepository,
     SubmenuCacheRepository,
     SubmenuRepository,
@@ -14,7 +18,7 @@ class SubmenuService(MenuService):
     orm_model = models.Submenu
     db_repository = SubmenuRepository
 
-    def __init__(self, database_repository: db_repository = Depends(), ):
+    def __init__(self, database_repository: SubmenuRepository = Depends(), ) -> None:
         self.database_repository = database_repository
         self.notificiation = NotificationRepository('submenu')
         self.cache_repository = SubmenuCacheRepository

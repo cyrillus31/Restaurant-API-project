@@ -16,7 +16,7 @@ class DishRepository(MenuRepository):
         self.detail_404 = 'dish not found'
         self.detail_400 = 'Dish with this title already exists'
 
-    def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[orm_model]:
+    def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[models.Dish | None]:
         menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
             skip).limit(limit).all()
         return menus
