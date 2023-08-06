@@ -22,42 +22,37 @@ class Menu(JsonModel):
 
 
 class MenuCacheRepository:
-    @staticmethod
-    def add(menu: dict):
-        new_menu = Menu(**menu)
-        new_menu.save()
-        new_menu.expire(30)
 
     @staticmethod
-    def get(id: str):
-        menu = Menu.find(Menu.id == id).first()
-        return menu
+    def get(id: str, item: str = "menu") -> dict:
+        cached_response = cache.get(f"{item}:{id}")
+        if cached_response:
+            return json.loads(cached_response)
+        return None
 
     @staticmethod
-    def get_all():
-        menus = Menu.find(Menu.id != 1).all()
-        return menus
+    def get_all(item: str = "menus") -> list[dict | None]:
+        cached_response = cache.get(item)
+        print("cached_response list: ", cached_response)
+        if cached_response:
+            return json.loads(cached_response)
+        return []
 
-    # @staticmethod
-    # def get(key: schemas.MenuCreate):
-        # cached_response = cache.get(json.dumps(key.dict()))
-        # return cached_response
+    @staticmethod
+    def add(id: str, response_orm_model: models.Menu, item: str = "menu") -> None:
+        response_dict = menu2dict(response_orm_model)
+        value = json.dumps(response_dict)
+        key = f"{item}:{id}"
+        print("cache created")
+        cache.set(key, value, ex=60)
 
-    # @staticmethod
-    # def set_one(request: schemas.MenuCreate, response_orm_model: models.Menu):
-        # response_dict = menu2dict(response_orm_model)
-        # key = json.dumps(request.dict())
-        # value = json.dumps(response_dict)
-        # print("cache created")
-        # cache.set(key, value, ex=30)
-
-    # @staticmethod
-    # def set_list(request: dict, response_orm_list: list[models.Menu | None]):
-        # response_dict = [menu2dict(model) for model in response_orm_list]
-        # key = json.dumps(request.dict())
-        # value = json.dumps(response_dict)
-        # print("cache created")
-        # cache.set(key, value, ex=30)
+    @staticmethod
+    def add_list(response_orm_model_list: list[models.Menu | None], item: str = "menus") -> None:
+        values = [menu2dict(one_model)
+                  for one_model in response_orm_model_list]
+        key = f"{item}"
+        print("cached list created")
+        cache.set(key, json.dumps(values), ex=60)
 
     @staticmethod
     def deinitialize_all():

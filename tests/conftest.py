@@ -9,6 +9,7 @@ from app.main import app
 from app.config import settings
 from app.database import get_db
 from app.database import Base
+from app.cache import MenuCacheRepository
 
 from app import models
 
@@ -26,13 +27,19 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 if not database_exists(engine.url):
     create_database(engine.url)
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSessionLocal = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine)
 
 
 # test route setup
 @pytest.fixture(autouse=True, scope="session")
 def PREFIX():
     return "/api/v1"
+
+
+@pytest.fixture(autouse=True, scope="function")  # test empty cache
+def empty_cache():
+    MenuCacheRepository.deinitialize_all()
 
 
 @pytest.fixture()
@@ -132,7 +139,8 @@ def test_dishes(session, test_menus, test_submenus):
     # menu2_id = test_menus[1].id
     # menu3_id = test_menus[2].id
     related_submenus = (
-        session.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all()
+        session.query(models.Submenu).filter(
+            models.Submenu.menu_id == menu_id).all()
     )
     submenu1_id = related_submenus[0].id
     submenu2_id = related_submenus[1].id

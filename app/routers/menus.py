@@ -7,25 +7,17 @@ from ..services import MenuService
 from .. import schemas, crud
 from ..database import get_db
 
-from starlette.requests import Request
-from starlette.responses import Response
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
-from redis import asyncio as aioredis
+# from starlette.requests import Request
+# from starlette.responses import Response
+# from fastapi_cache import FastAPICache
+# from fastapi_cache.backends.redis import RedisBackend
+# from fastapi_cache.decorator import cache
+# from redis import asyncio as aioredis
 
 router = APIRouter(prefix="/api/v1/menus", tags=["Menus"])
 
 
-@router.on_event("startup")
-async def startup():
-    redis = aioredis.from_url(
-        "redis://localhost", encoding="utf8", decode_responses=True)
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-
-
-# @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
 async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
     return menu.create(menu_data)
 
@@ -56,7 +48,7 @@ def delete_menu(id, menu: MenuService = Depends()):
     # return {"status": True, "message": "The menu has been deleted"}
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut | None])
 def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
     return menu.get_all(skip=skip, limit=limit)
 
