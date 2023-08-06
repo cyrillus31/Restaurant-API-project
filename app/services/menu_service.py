@@ -1,5 +1,3 @@
-from typing import Union
-
 from fastapi import Depends
 
 from .. import models, schemas
@@ -16,12 +14,12 @@ class MenuService:
         self.notificiation = NotificationRepository('menu')
         self.cache_repository = MenuCacheRepository
 
-    def create(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish:
+    def create(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         new_menu = self.database_repository.add(menu_data, **kwargs)
         self.cache_repository.deinitialize_all()
         return new_menu
 
-    def delete(self, id, **kwargs) -> None:
+    def delete(self, id, **kwargs) -> dict:
         self.database_repository.delete(id, **kwargs)
         self.cache_repository.deinitialize_all()
         return self.notificiation.delete_success()

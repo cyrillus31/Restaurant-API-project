@@ -50,9 +50,9 @@ class MenuCacheRepository:
                   for one_model in response_orm_model_list]
 
         # generate key from kwargs
-        key = f'{item}'
+        key = f'{item}:'
         for k in kwargs:
-            key += str(kwargs[k])
+            key = key + str(kwargs[k])
 
         print('cached list created')
         cache.set(key, json.dumps(values), ex=60)

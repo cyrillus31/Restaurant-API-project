@@ -1,11 +1,7 @@
-from typing import Union
-
 from fastapi import Depends
 
 from .. import models, schemas
 from ..repositories import (
-    DishRepository,
-    MenuRepository,
     NotificationRepository,
     SubmenuCacheRepository,
     SubmenuRepository,
