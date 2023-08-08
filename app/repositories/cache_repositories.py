@@ -59,6 +59,19 @@ class MenuCacheRepository:
         print('cached list created')
         cache.set(key, json.dumps(values), ex=CACHE_EXPIRE_TIME)
 
+    def invalidate_related_cache_list(self):
+        """This methods deletes cached list the updated http resource belongs to"""
+        cache.delete(f'*{self.objects}/')
+        print(f'cached list of {self.objects} was deleted')
+
+    def invalidate_all_related_cache(self, url_key):
+        split_url = url_key.split('/')
+        url_to_delete = ''
+        for resource in split_url:
+            url_to_delete += f'{resource}/'
+            cache.delete(url_to_delete)
+            print(f'cached object {url_to_delete} was deleted')
+
     @classmethod
     def deinitialize_all(cls):
         cache.flushall()

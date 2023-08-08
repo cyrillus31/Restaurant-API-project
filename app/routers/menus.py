@@ -8,18 +8,24 @@ router = APIRouter(prefix='/api/v1/menus', tags=['Menus'])
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
 async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
-    return menu.create(menu_data)
+    return menu.create(
+        url_key='menus/',
+        menu_data=menu_data
+    )
 
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
 def delete_menu(id, menu: MenuService = Depends()):
-    return menu.delete(id)
+    return menu.delete(
+        url_key='menus/{id}',
+        id=id
+    )
 
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut | None])
 def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
     return menu.get_all(
-        url_key='/api/v1/menus/{menu_id}/submenus/',
+        url_key='menus/{menu_id}/submenus/',
         skip=skip,
         limit=limit
     )
@@ -28,7 +34,7 @@ def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
 def get_menu(id, menu: MenuService = Depends()):
     return menu.get(
-        url_key=f'/api/v1/menus/{id}',
+        url_key=f'menus/{id}',
         id=id)
 
 
