@@ -9,13 +9,21 @@ router = APIRouter(
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.DishOut)
-def create_dish(submenu_id, dish_data: schemas.DishCreate, dish: DishService = Depends()):
-    return dish.create(dish_data, submenu_id=submenu_id)
+def create_dish(menu_id: str, submenu_id: str, dish_data: schemas.DishCreate, dish: DishService = Depends()):
+    return dish.create(
+        url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/',
+        menu_data=dish_data,
+        submenu_id=submenu_id
+    )
 
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
-def delete_dish(submenu_id, id, dish: DishService = Depends()):
-    return dish.delete(id, submenu_id=submenu_id)
+def delete_dish(menu_id: str, submenu_id: str, id: str, dish: DishService = Depends()):
+    return dish.delete(
+        url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/{id}/',
+        id=id,
+        submenu_id=submenu_id
+    )
 
 
 @router.get(
@@ -24,21 +32,32 @@ def delete_dish(submenu_id, id, dish: DishService = Depends()):
     response_model=list[schemas.DishOut | None],
 )
 def read_dishes(
-    submenu_id,
+    menu_id: str,
+    submenu_id: str,
     skip: int = 0,
     limit: int = 100,
     dish: DishService = Depends(),
 ):
-    return dish.get_all(submenu_id=submenu_id, skip=skip, limit=limit)
+    return dish.get_all(
+        url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/',
+        submenu_id=submenu_id,
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.DishOut)
-def get_dish(id, submenu_id, dish: DishService = Depends()):
-    return dish.get(id=id, submenu_id=submenu_id)
+def get_dish(id: str, submenu_id: str, menu_id: str, dish: DishService = Depends()):
+    return dish.get(
+        url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/{id}/',
+        id=id,
+        submenu_id=submenu_id)
 
 
 @router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.DishOut)
 def update_dish(
-    submenu_id, id, dish_data: schemas.DishCreate, dish: DishService = Depends()
+    submenu_id: str,
+    id: str,
+    dish_data: schemas.DishCreate, dish: DishService = Depends()
 ):
     return dish.update(dish_data, id=id, submenu_id=submenu_id)
