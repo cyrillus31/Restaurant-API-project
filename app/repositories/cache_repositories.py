@@ -8,7 +8,7 @@ from ..utils import dish2dict, menu2dict, submenu2dict
 
 cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
-CACHE_EXPIRE_TIME = 60
+CACHE_EXPIRE_TIME = 60000
 
 
 class MenuCacheRepository:
@@ -25,8 +25,9 @@ class MenuCacheRepository:
         if object == 'dish':
             self.to_dict_func = dish2dict
 
-    def get(self, id: str, **kwargs) -> dict | None:
-        cached_response = cache.get(f'{self.object}:{id}')
+    def get(self, url_key: str) -> dict | None:
+        key = url_key
+        cached_response = cache.get(key)
         if cached_response:
             return json.loads(cached_response)
         return None
@@ -68,6 +69,8 @@ class MenuCacheRepository:
         split_url = url_key.split('/')
         url_to_delete = ''
         for resource in split_url:
+            if resource == '':
+                continue
             url_to_delete += f'{resource}/'
             cache.delete(url_to_delete)
             print(f'cached object {url_to_delete} was deleted')

@@ -17,7 +17,7 @@ async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
 def delete_menu(id, menu: MenuService = Depends()):
     return menu.delete(
-        url_key='menus/{id}',
+        url_key=f'menus/{id}/',
         id=id
     )
 
@@ -25,7 +25,7 @@ def delete_menu(id, menu: MenuService = Depends()):
 @router.get('/', status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut | None])
 def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
     return menu.get_all(
-        url_key='menus/{menu_id}/submenus/',
+        url_key='menus/',
         skip=skip,
         limit=limit
     )
@@ -34,7 +34,7 @@ def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
 def get_menu(id, menu: MenuService = Depends()):
     return menu.get(
-        url_key=f'menus/{id}',
+        url_key=f'menus/{id}/',
         id=id)
 
 
