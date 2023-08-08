@@ -3,8 +3,9 @@
 - [Описание API](#описание-api)
 - [Тестирование](#тестирование)
 - [Запуск приложения в контейнерах](#запуск-приложения-в-контейнерах)
+- [Pre-commit hooks](#pre-commit-checks)
 - [Запуск приложения вручную](#запуск-приложения-вручную)
-- [Результаты тестирование в Postman](#результаты-тестирование-в-Postman)
+- [Результаты тестирования в Postman](#резльтаты-тестирования-в-postman)
 
 
 ### Технические задания
@@ -125,6 +126,7 @@ docker run -p 6379:6379 -it redis/redis-stack:latest
 ```console
 uvicorn app.main:app
 ```
-<br><br>
-## Результаты тестирование в Postman
+<br>
+
+## Результаты тестирования в Postman
 <img src="docs/postman_test_results.png" alt="postman test results 100%">
