@@ -1,14 +1,12 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from .. import crud, models, schemas
+from .. import crud, models
 from ..database import get_db
 from .menu_repository import MenuRepository
 
 
 class SubmenuRepository(MenuRepository):
-    orm_model = models.Submenu
-    schema = schemas.SubmenuCreate
 
     def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db

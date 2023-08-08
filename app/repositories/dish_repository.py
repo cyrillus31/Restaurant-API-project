@@ -1,14 +1,12 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from .. import models, schemas
+from .. import models
 from ..database import get_db
 from .menu_repository import MenuRepository
 
 
 class DishRepository(MenuRepository):
-    orm_model = models.Dish
-    schema = schemas.DishCreate
 
     def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
