@@ -62,22 +62,29 @@ class MenuCacheRepository:
 
     def invalidate_update_cache(self, id):
         """This methods deletes cached list the updated http resource belongs to"""
-        r1 = cache.delete(*cache.keys(f'*{self.objects}/'))
-        r2 = cache.delete(*cache.keys(f'*{self.objects}/{id}/'))
-        print('the following objects were suppose to be  deleted: \n',
-              f'*{self.objects}/\n',
-              f'*{self.objects}/{id}/')
-        print(r1, r2)
+        # in case someone tries to update empty cache entires
+        try:
+            cache.delete(*cache.keys(f'*{self.objects}/'))
+            cache.delete(*cache.keys(f'*{self.objects}/{id}/'))
+            print('the following objects were suppose to be  deleted: \n',
+                  f'*{self.objects}/\n',
+                  f'*{self.objects}/{id}/')
+        except redis.exceptions.ResponseError:
+            pass
 
     def invalidate_all_related_cache(self, url_key):
-        split_url = url_key.split('/')
-        url_to_delete = ''
-        for resource in split_url:
-            if resource == '':
-                continue
-            url_to_delete += f'{resource}/'
-            cache.delete(url_to_delete)
-            print(f'cached object {url_to_delete} was deleted')
+        try:
+            split_url = url_key.split('/')
+            url_to_delete = ''
+            for resource in split_url:
+                if resource == '':
+                    continue
+                url_to_delete += f'{resource}/'
+                cache.delete(url_to_delete)
+                print(f'cached object {url_to_delete} was deleted')
+
+        except redis.exceptions.ResponseError:
+            pass
 
     @classmethod
     def deinitialize_all(cls):
