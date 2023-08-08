@@ -49,5 +49,5 @@ class MenuService:
 
     def update(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
         update_menu = self.database_repository.update(menu_data, id, **kwargs)
-        self.cache_repository.invalidate_related_cache_list()
+        self.cache_repository.invalidate_update_cache(id)
         return update_menu

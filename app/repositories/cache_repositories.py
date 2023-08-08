@@ -8,7 +8,7 @@ from ..utils import dish2dict, menu2dict, submenu2dict
 
 cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
-CACHE_EXPIRE_TIME = 60000
+CACHE_EXPIRE_TIME = 1000
 
 
 class MenuCacheRepository:
@@ -60,10 +60,14 @@ class MenuCacheRepository:
         print('cached list created')
         cache.set(key, json.dumps(values), ex=CACHE_EXPIRE_TIME)
 
-    def invalidate_related_cache_list(self):
+    def invalidate_update_cache(self, id):
         """This methods deletes cached list the updated http resource belongs to"""
-        cache.delete(f'*{self.objects}/')
-        print(f'cached list of {self.objects} was deleted')
+        r1 = cache.delete(*cache.keys(f'*{self.objects}/'))
+        r2 = cache.delete(*cache.keys(f'*{self.objects}/{id}/'))
+        print('the following objects were suppose to be  deleted: \n',
+              f'*{self.objects}/\n',
+              f'*{self.objects}/{id}/')
+        print(r1, r2)
 
     def invalidate_all_related_cache(self, url_key):
         split_url = url_key.split('/')
