@@ -25,12 +25,21 @@ def delete_submenu(menu_id, id, submenu: SubmenuService = Depends()):
     response_model=list[schemas.SubmenuOut],
 )
 def read_submenus(menu_id, skip: int = 0, limit: int = 100, submenu: SubmenuService = Depends(),):
-    return submenu.get_all(menu_id=menu_id, skip=skip, limit=limit, )
+    return submenu.get_all(
+        url_key='/api/v1/menus/{menu_id}/submenus/',
+        menu_id=menu_id,
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut)
 def get_submenu(id, menu_id, submenu: SubmenuService = Depends()):
-    return submenu.get(id=id, menu_id=menu_id)
+    return submenu.get(
+        url_key='/api/v1/menus/{menu_id}/submenus/{id}',
+        id=id,
+        menu_id=menu_id
+    )
 
 
 @router.patch(

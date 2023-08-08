@@ -24,24 +24,23 @@ class MenuService:
         self.cache_repository.deinitialize_all()
         return self.notificiation.delete_success()
 
-    def get_all(self, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | dict | None]:
-        cached_response = self.cache_repository.get_all(**kwargs)
+    def get_all(self, url_key: str, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | dict | None]:
+        cached_response = self.cache_repository.get_all(url_key)
         if cached_response:
             print('cache list hit')
             return cached_response
         all_menus = self.database_repository.get_all(**kwargs)
-        self.cache_repository.add_list(all_menus, **kwargs)
+        self.cache_repository.add_list(url_key, all_menus)
         return all_menus  # type: ignore
 
-    def get(self, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
-        print('looking for cache')
-        cached_response = self.cache_repository.get(**kwargs)
+    def get(self, url_key: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
+        cached_response = self.cache_repository.get(url_key)
         if cached_response:  # if cache exists return cached response
             print('cache hit')
             return cached_response
         menu = self.database_repository.get(
-            **kwargs)  # convert ORM model into dict
-        self.cache_repository.add(menu.id, menu)  # add dict to cache
+            **kwargs)
+        self.cache_repository.add(url_key, menu)
         return menu
 
     def update(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:

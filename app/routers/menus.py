@@ -18,12 +18,18 @@ def delete_menu(id, menu: MenuService = Depends()):
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut | None])
 def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
-    return menu.get_all(skip=skip, limit=limit)
+    return menu.get_all(
+        url_key='/api/v1/menus/{menu_id}/submenus/',
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
 def get_menu(id, menu: MenuService = Depends()):
-    return menu.get(id=id)
+    return menu.get(
+        url_key=f'/api/v1/menus/{id}',
+        id=id)
 
 
 @router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)

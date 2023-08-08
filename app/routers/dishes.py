@@ -24,17 +24,26 @@ def delete_dish(submenu_id, id, dish: DishService = Depends()):
     response_model=list[schemas.DishOut | None],
 )
 def read_dishes(
+    menu_id,
     submenu_id,
     skip: int = 0,
     limit: int = 100,
     dish: DishService = Depends(),
 ):
-    return dish.get_all(submenu_id=submenu_id, skip=skip, limit=limit)
+    return dish.get_all(
+        url_key=f'/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/',
+        submenu_id=submenu_id,
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.DishOut)
-def get_dish(id, submenu_id, dish: DishService = Depends()):
-    return dish.get(id=id, submenu_id=submenu_id)
+def get_dish(id, submenu_id, menu_id, dish: DishService = Depends()):
+    return dish.get(
+        url_key=f'/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{id}',
+        id=id,
+        submenu_id=submenu_id)
 
 
 @router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.DishOut)
