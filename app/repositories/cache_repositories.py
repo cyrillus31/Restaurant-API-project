@@ -13,7 +13,7 @@ CACHE_EXPIRE_TIME = 1000
 
 class MenuCacheRepository:
 
-    def __init__(self, object, objects):
+    def __init__(self, object: str, objects: str):
         self.object = object
         self.objects = objects
 
@@ -60,7 +60,7 @@ class MenuCacheRepository:
         print('cached list created')
         cache.set(key, json.dumps(values), ex=CACHE_EXPIRE_TIME)
 
-    def invalidate_update_cache(self, id):
+    def invalidate_update_cache(self, id: str):
         """This methods deletes cached list the updated http resource belongs to"""
         # in case someone tries to update empty cache entires
         try:
@@ -72,7 +72,7 @@ class MenuCacheRepository:
         except redis.exceptions.ResponseError:
             pass
 
-    def invalidate_all_related_cache(self, url_key):
+    def invalidate_all_related_cache(self, url_key: str):
         try:
             split_url = url_key.split('/')
             url_to_delete = ''

@@ -7,7 +7,7 @@ router = APIRouter(prefix='/api/v1/menus', tags=['Menus'])
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
-async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
+def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
     return menu.create(
         url_key='menus/',
         menu_data=menu_data
@@ -15,7 +15,7 @@ async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends
 
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
-def delete_menu(id, menu: MenuService = Depends()):
+def delete_menu(id: str, menu: MenuService = Depends()):
     return menu.delete(
         url_key=f'menus/{id}/',
         id=id
@@ -32,12 +32,12 @@ def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-def get_menu(id, menu: MenuService = Depends()):
+def get_menu(id: str, menu: MenuService = Depends()):
     return menu.get(
         url_key=f'menus/{id}/',
         id=id)
 
 
 @router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-def update_menu(menu_data: schemas.MenuCreate, id, menu: MenuService = Depends()):
+def update_menu(menu_data: schemas.MenuCreate, id: str, menu: MenuService = Depends()):
     return menu.update(menu_data, id=id)

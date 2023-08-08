@@ -19,7 +19,7 @@ class MenuService:
         self.cache_repository.invalidate_all_related_cache(url_key)
         return new_menu
 
-    def delete(self, url_key: str, id, **kwargs) -> dict:
+    def delete(self, url_key: str, id: str, **kwargs) -> dict:
         self.database_repository.delete(id, **kwargs)
         self.cache_repository.invalidate_all_related_cache(url_key)
         return self.notificiation.delete_success()
