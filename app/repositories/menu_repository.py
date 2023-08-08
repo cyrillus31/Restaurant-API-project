@@ -6,8 +6,6 @@ from ..database import get_db
 
 
 class MenuRepository:
-    orm_model = models.Menu
-    schema = schemas.MenuCreate
 
     def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db

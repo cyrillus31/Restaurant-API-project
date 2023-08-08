@@ -32,7 +32,7 @@ class MenuCacheRepository:
             return json.loads(cached_response)
         return None
 
-    def get_all(self, url_key: str) -> list[dict | None]:
+    def get_all(self, url_key: str) -> list[dict | None] | None:
 
         # generate key from kwargs
         key = url_key
@@ -41,7 +41,7 @@ class MenuCacheRepository:
         print('cached_response list: ', cached_response)
         if cached_response:
             return json.loads(cached_response)
-        return []
+        return None
 
     def add(self, url_key: str, response_orm_model: models.Menu | models.Submenu | models.Dish | None) -> None:
         response_dict = self.to_dict_func(response_orm_model)  # type: ignore
