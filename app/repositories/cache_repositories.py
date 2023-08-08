@@ -8,7 +8,7 @@ from ..utils import dish2dict, menu2dict, submenu2dict
 
 cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
-CACHE_EXPIRE_TIME = 1000
+CACHE_EXPIRE_TIME = 60
 
 
 class MenuCacheRepository:
