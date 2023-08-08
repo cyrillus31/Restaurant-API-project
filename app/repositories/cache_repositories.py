@@ -82,6 +82,7 @@ class MenuCacheRepository:
                 url_to_delete += f'{resource}/'
                 cache.delete(url_to_delete)
                 print(f'cached object {url_to_delete} was deleted')
+            cache.delete(*cache.keys(url_to_delete + '*'))
 
         except redis.exceptions.ResponseError:
             pass
