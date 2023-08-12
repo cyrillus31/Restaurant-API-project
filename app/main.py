@@ -1,13 +1,9 @@
 from fastapi import FastAPI
-from sqlalchemy_utils import create_database, database_exists
 
 from . import models
 from .database import engine, Base, init_db
 from .routers import dishes, menus, submenus
 
-# create database
-# if not database_exists(engine.url):
-    # create_database(engine.url)
 
 # create tables
 # Base.metadata.create_all(engine)
