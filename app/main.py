@@ -3,7 +3,7 @@ from sqlalchemy_utils import create_database, database_exists
 
 from . import models
 from .database import database, engine, metadata
-from .routers import dishes, menus, submenus
+from .routers import menus # , submenus, dish
 
 # create database
 # if not database_exists(engine.url):
@@ -16,8 +16,8 @@ metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.include_router(menus.router)
-app.include_router(submenus.router)
-app.include_router(dishes.router)
+# app.include_router(submenus.router)
+# app.include_router(dishes.router)
 
 
 @app.on_event('startup')
