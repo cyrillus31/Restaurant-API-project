@@ -1,44 +1,46 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
+from databases import Database
 
 from .. import crud, models, schemas
-from ..database import get_db
+from ..database import database
 
 
 class MenuRepository:
 
-    def __init__(self, db: Session = Depends(get_db)) -> None:
+    # def __init__(self, db: Session = Depends(database)) -> None:
+    def __init__(self, db: Database = database) -> None:
         self.db = db
         self.orm_model = models.Menu
         self.detail_404 = 'menu not found'
         self.detail_400 = 'Menu with this title already exists'
 
-    def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | None]:
-        menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
+    async def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | None]:
+        menus = await self.db.query(self.orm_model).filter_by(**kwargs).offset(
             skip).limit(limit).all()
 
         # count submenus and dishes
         for db_menu in menus:
-            db_menu.submenus_count = crud.get_menu_submenus_count(
+            db_menu.submenus_count = await crud.get_menu_submenus_count(
                 self.db, db_menu.id)
-            db_menu.dishes_count = crud.get_menus_dishes_count(
+            db_menu.dishes_count = await crud.get_menus_dishes_count(
                 self.db, db_menu.id)
         return menus
 
-    def get(self, **kwargs):
-        menu = self.db.query(
+    async def get(self, **kwargs):
+        menu = await self.db.query(
             self.orm_model).filter_by(**kwargs).first()
         if not menu:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
 
         # count submenus and dishes
-        menu.submenus_count = crud.get_menu_submenus_count(self.db, menu.id)
-        menu.dishes_count = crud.get_menus_dishes_count(self.db, menu.id)
+        menu.submenus_count = await crud.get_menu_submenus_count(self.db, menu.id)
+        menu.dishes_count = await crud.get_menus_dishes_count(self.db, menu.id)
         return menu
 
-    def add(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
-        menu_exists = self.db.query(self.orm_model).filter(
+    async def add(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
+        menu_exists = await self.db.query(self.orm_model).filter(
             self.orm_model.title == menu.title).filter_by(**kwargs).first()
         if menu_exists:
             raise HTTPException(
@@ -46,29 +48,29 @@ class MenuRepository:
             )
         new_menu = self.orm_model(**menu.dict(), **kwargs)
         self.db.add(new_menu)
-        self.db.commit()
-        self.db.refresh(new_menu)
+        await self.db.commit()
+        await self.db.refresh(new_menu)
         return new_menu
 
-    def delete(self, id: str, **kwargs) -> None:
+    async def delete(self, id: str, **kwargs) -> None:
         menu_exists = self.get(id=id, **kwargs)
         if not menu_exists:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
-        self.db.query(self.orm_model).filter(
+        await self.db.query(self.orm_model).filter(
             self.orm_model.id == id).delete()
-        self.db.commit()
+        await self.db.commit()
 
-    def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
+    async def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         # menu_exists = self.get(id=id)
-        menu_exists = self.db.query(self.orm_model).filter(
+        menu_exists = await self.db.query(self.orm_model).filter(
             self.orm_model.id == id).filter_by(**kwargs).first()
         if not menu_exists:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
 
-        update_menu = self.db.query(
+        update_menu = await self.db.query(
             self.orm_model).filter(self.orm_model.id == id)
         update_menu.update(menu.dict(), synchronize_session=False)
-        self.db.commit()
+        await self.db.commit()
         return update_menu.first()
