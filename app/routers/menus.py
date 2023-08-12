@@ -14,12 +14,12 @@ async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends
     )
 
 
-# @router.delete('/{id}', status_code=status.HTTP_200_OK)
-# def delete_menu(id: str, menu: MenuService = Depends()):
-    # return menu.delete(
-        # url_key=f'menus/{id}/',
-        # id=id
-    # )
+@router.delete('/{id}', status_code=status.HTTP_200_OK)
+async def delete_menu(id: str, menu: MenuService = Depends()):
+    return await menu.delete(
+        url_key=f'menus/{id}/',
+        id=id
+    )
 
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut | None])
@@ -31,13 +31,13 @@ async def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depend
     )
 
 
-# @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-# def get_menu(id: str, menu: MenuService = Depends()):
-    # return menu.get(
-        # url_key=f'menus/{id}/',
-        # id=id)
+@router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
+async def get_menu(id: str, menu: MenuService = Depends()):
+    return await menu.get(
+        url_key=f'menus/{id}/',
+        id=id)
 
 
-# @router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-# def update_menu(menu_data: schemas.MenuCreate, id: str, menu: MenuService = Depends()):
-    # return menu.update(menu_data, id=id)
+@router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
+async def update_menu(menu_data: schemas.MenuCreate, id: str, menu: MenuService = Depends()):
+    return await menu.update(menu_data, id=id)

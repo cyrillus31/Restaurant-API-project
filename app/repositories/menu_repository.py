@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import crud, models, schemas
@@ -31,8 +31,11 @@ class MenuRepository:
         return menus
 
     async def get(self, **kwargs):
-        menu = self.db.query(
-            self.orm_model).filter_by(**kwargs).first()
+        # menu = self.db.query(
+            # self.orm_model).filter_by(**kwargs).first()
+        lookup_query = select(self.orm_model).filter_by(**kwargs)
+        result = await self.db.execute(lookup_query)
+        menu = result.scalars().first()
         if not menu:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
@@ -58,25 +61,36 @@ class MenuRepository:
         await self.db.refresh(new_menu)
         return new_menu
 
-    def delete(self, id: str, **kwargs) -> None:
-        menu_exists = self.get(id=id, **kwargs)
+    async def delete(self, id: str, **kwargs) -> None:
+        lookup_query = select(self.orm_model).filter_by(id=id)
+        result = await self.db.execute(lookup_query)
+        menu_exists = result.scalars().first()
         if not menu_exists:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
-        self.db.query(self.orm_model).filter(
-            self.orm_model.id == id).delete()
-        self.db.commit()
+        # self.db.query(self.orm_model).filter(
+            # self.orm_model.id == id).delete()
+        # self.db.commit()
+        result = await self.db.execute(lookup_query)
+        await self.db.delete(result.scalars().first())
+        await self.db.commit()
 
-    def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
-        # menu_exists = self.get(id=id)
-        menu_exists = self.db.query(self.orm_model).filter(
-            self.orm_model.id == id).filter_by(**kwargs).first()
+    async def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
+        # menu_exists = self.db.query(self.orm_model).filter(
+            # self.orm_model.id == id).filter_by(**kwargs).first()
+        lookup_query = select(self.orm_model).filter_by(id=id)
+        result = await self.db.execute(lookup_query)
+        menu_exists = result.scalars().first()
         if not menu_exists:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
 
-        update_menu = self.db.query(
-            self.orm_model).filter(self.orm_model.id == id)
-        update_menu.update(menu.dict(), synchronize_session=False)
-        self.db.commit()
-        return update_menu.first()
+        update_query = update(self.orm_model).where(self.orm_model.id == id).values(**menu.dict())
+        result = await self.db.execute(update_query)
+        # update_menu = await self.db.query(
+            # self.orm_model).filter(self.orm_model.id == id)
+        
+        await self.db.commit()
+        result = await self.db.execute(lookup_query)
+        updated_menu = result.scalars().first()
+        return updated_menu
