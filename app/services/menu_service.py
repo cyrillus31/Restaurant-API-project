@@ -1,4 +1,5 @@
 from typing import Any
+
 from fastapi import Depends
 
 from .. import models, schemas
@@ -29,8 +30,8 @@ class MenuService:
         # cached_response = self.cache_repository.get_all(url_key)
 
         # if cached_response:
-            # print('cache list hit')
-            # return cached_response
+        # print('cache list hit')
+        # return cached_response
 
         # all_menus = await self.database_repository.get_all(**kwargs)
         # self.cache_repository.add_list(url_key, all_menus)
@@ -40,8 +41,8 @@ class MenuService:
     # async def get(self, url_key: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
         # cached_response = self.cache_repository.get(url_key)
         # if cached_response:  # if cache exists return cached response
-            # print('cache hit')
-            # return cached_response
+        # print('cache hit')
+        # return cached_response
 
         # menu = await self.database_repository.get(**kwargs)
 

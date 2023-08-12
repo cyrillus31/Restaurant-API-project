@@ -3,7 +3,7 @@ from sqlalchemy_utils import create_database, database_exists
 
 from . import models
 from .database import database, engine, metadata
-from .routers import menus # , submenus, dish
+from .routers import menus  # , submenus, dish
 
 # create database
 # if not database_exists(engine.url):
