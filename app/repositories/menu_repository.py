@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import crud, models, schemas
@@ -71,8 +71,8 @@ class MenuRepository:
         # self.db.query(self.orm_model).filter(
             # self.orm_model.id == id).delete()
         # self.db.commit()
-        result = await self.db.execute(lookup_query)
-        await self.db.delete(result.scalars().first())
+        delete_query = delete(self.orm_model).filter_by(id=id)
+        result = await self.db.execute(delete_query)
         await self.db.commit()
 
     async def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
@@ -85,7 +85,7 @@ class MenuRepository:
             raise HTTPException(
                 status_code=404, detail=f'{self.detail_404}')
 
-        update_query = update(self.orm_model).where(self.orm_model.id == id).values(**menu.dict())
+        update_query = update(self.orm_model).where(self.orm_model.id == id).values({**menu.dict(), **kwargs})
         result = await self.db.execute(update_query)
         # update_menu = await self.db.query(
             # self.orm_model).filter(self.orm_model.id == id)
