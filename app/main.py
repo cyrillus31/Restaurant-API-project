@@ -7,7 +7,7 @@ from .routers import dishes, menus, submenus
 
 # create database
 # if not database_exists(engine.url):
-    # create_database(engine.url)
+# create_database(engine.url)
 
 # create tables
 metadata.create_all(bind=engine)
