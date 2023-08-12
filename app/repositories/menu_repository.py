@@ -24,13 +24,13 @@ class MenuRepository:
 
         # count submenus and dishes
         for db_menu in menus:
-            db_menu.submenus_count = crud.get_menu_submenus_count(
+            db_menu.submenus_count = await crud.get_menu_submenus_count(
                 self.db, db_menu.id)
-            db_menu.dishes_count = crud.get_menus_dishes_count(
+            db_menu.dishes_count = await crud.get_menus_dishes_count(
                 self.db, db_menu.id)
         return menus
 
-    def get(self, **kwargs):
+    async def get(self, **kwargs):
         menu = self.db.query(
             self.orm_model).filter_by(**kwargs).first()
         if not menu:
@@ -38,21 +38,24 @@ class MenuRepository:
                 status_code=404, detail=f'{self.detail_404}')
 
         # count submenus and dishes
-        menu.submenus_count = crud.get_menu_submenus_count(self.db, menu.id)
-        menu.dishes_count = crud.get_menus_dishes_count(self.db, menu.id)
+        menu.submenus_count = await crud.get_menu_submenus_count(self.db, menu.id)
+        menu.dishes_count = await crud.get_menus_dishes_count(self.db, menu.id)
         return menu
 
-    def add(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
-        menu_exists = self.db.query(self.orm_model).filter(
-            self.orm_model.title == menu.title).filter_by(**kwargs).first()
+    async def add(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
+        # menu_exists = self.db.query(self.orm_model).filter(
+            # self.orm_model.title == menu.title).filter_by(**kwargs).first()
+        lookup_query = select(self.orm_model).filter(self.orm_model.title == menu.title).filter_by(**kwargs)
+        result = await self.db.execute(lookup_query)
+        menu_exists = result.scalars().first()
         if menu_exists:
             raise HTTPException(
                 status_code=400, detail=f'{self.detail_400}'
             )
         new_menu = self.orm_model(**menu.dict(), **kwargs)
         self.db.add(new_menu)
-        self.db.commit()
-        self.db.refresh(new_menu)
+        await self.db.commit()
+        await self.db.refresh(new_menu)
         return new_menu
 
     def delete(self, id: str, **kwargs) -> None:

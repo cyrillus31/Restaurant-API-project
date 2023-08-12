@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -5,165 +6,171 @@ from . import models, schemas
 # Menu Operations
 
 
-def create_menu(db: Session, menu: schemas.MenuCreate):
-    new_menu = models.Menu(**menu.dict())
 
-    db.add(new_menu)
 
-    db.commit()
+async def get_menu_submenus_count(db, menu_id):
+    # return len(db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all())
+    query = select(models.Submenu).filter(models.Submenu.menu_id == menu_id)
+    result = await db.execute(query)
+    return len(result.scalars().all())
 
-    db.refresh(new_menu)
 
-    return new_menu
+async def get_sumbenus_dishes_count(db, submenu_id):
+    # return len(db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).all())
+    query = select(models.Dish).filter(models.Dish.submenu_id == submenu_id)
+    result = await db.execute(query)
+    return len(result.scalars().all())
 
 
-def get_menus(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Menu).offset(skip).limit(limit).all()
 
+async def get_menus_dishes_count(db, menu_id):
+    # return len(db.query(models.Dish).join(models.Submenu).filter(models.Submenu.menu_id == menu_id).all())
+    query = select(models.Dish).join(models.Submenu).filter(models.Submenu.menu_id == menu_id)
+    result = await db.execute(query)
+    return len(result.scalars().all())
 
-def get_menu_by_title(db: Session, title: str):
-    return db.query(models.Menu).filter(models.Menu.title == title).first()
+# def create_menu(db: Session, menu: schemas.MenuCreate):
+    # new_menu = models.Menu(**menu.dict())
 
+    # db.add(new_menu)
 
-def get_menu_by_id(db: Session, id: str):
-    return db.query(models.Menu).filter(models.Menu.id == id).first()
+    # db.commit()
 
+    # db.refresh(new_menu)
 
-def delete_menu_by_id(db: Session, id: str):
-    db.query(models.Menu).filter(models.Menu.id == id).delete()
+    # return new_menu
 
-    db.commit()
 
+# def get_menus(db: Session, skip: int = 0, limit: int = 100):
+    # return db.query(models.Menu).offset(skip).limit(limit).all()
 
-def update_menu_by_id(db: Session, menu: schemas.MenuCreate, id: str):
-    update_menu = db.query(models.Menu).filter(models.Menu.id == id)
 
-    update_menu.update(menu.dict(), synchronize_session=False)
+# def get_menu_by_title(db: Session, title: str):
+    # return db.query(models.Menu).filter(models.Menu.title == title).first()
 
-    db.commit()
 
-    return update_menu.first()
+# def get_menu_by_id(db: Session, id: str):
+    # return db.query(models.Menu).filter(models.Menu.id == id).first()
 
 
-# Submenu operations
+# def delete_menu_by_id(db: Session, id: str):
+    # db.query(models.Menu).filter(models.Menu.id == id).delete()
 
+    # db.commit()
 
-def create_submenu(menu_id, db: Session, submenu: schemas.MenuCreate):
-    new_submenu = models.Submenu(
-        title=submenu.title,
-        description=submenu.description,
-        menu_id=menu_id,
-    )
 
-    db.add(new_submenu)
+# def update_menu_by_id(db: Session, menu: schemas.MenuCreate, id: str):
+    # update_menu = db.query(models.Menu).filter(models.Menu.id == id)
 
-    db.commit()
+    # update_menu.update(menu.dict(), synchronize_session=False)
 
-    db.refresh(new_submenu)
+    # db.commit()
 
-    return new_submenu
+    # return update_menu.first()
 
 
-def get_submenus(menu_id, db: Session, skip: int = 0, limit: int = 100):
-    return (
-        db.query(models.Submenu)
-        .filter(models.Submenu.menu_id == menu_id)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+# # Submenu operations
 
 
-def get_submenu_by_title(db: Session, title: str):
-    # search only by title fix later
+# def create_submenu(menu_id, db: Session, submenu: schemas.MenuCreate):
+    # new_submenu = models.Submenu(
+        # title=submenu.title,
+        # description=submenu.description,
+        # menu_id=menu_id,
+    # )
 
-    return db.query(models.Submenu).filter(models.Submenu.title == title).first()
+    # db.add(new_submenu)
 
+    # db.commit()
 
-def get_submenu_by_id(db: Session, id: str):
-    return db.query(models.Submenu).filter(models.Submenu.id == id).first()
+    # db.refresh(new_submenu)
 
+    # return new_submenu
 
-def delete_submenu_by_id(db: Session, id: str):
-    db.query(models.Submenu).filter(models.Submenu.id == id).delete()
 
-    db.commit()
+# def get_submenus(menu_id, db: Session, skip: int = 0, limit: int = 100):
+    # return (
+        # db.query(models.Submenu)
+        # .filter(models.Submenu.menu_id == menu_id)
+        # .offset(skip)
+        # .limit(limit)
+        # .all()
+    # )
 
 
-def update_submenu_by_id(db: Session, submenu: schemas.MenuCreate, id: str):
-    update_menu = db.query(models.Submenu).filter(models.Submenu.id == id)
+# def get_submenu_by_title(db: Session, title: str):
+    # # search only by title fix later
 
-    update_menu.update(submenu.dict(), synchronize_session=False)
+    # return db.query(models.Submenu).filter(models.Submenu.title == title).first()
 
-    db.commit()
 
-    return update_menu.first()
+# def get_submenu_by_id(db: Session, id: str):
+    # return db.query(models.Submenu).filter(models.Submenu.id == id).first()
 
 
-# Dishes operations
+# def delete_submenu_by_id(db: Session, id: str):
+    # db.query(models.Submenu).filter(models.Submenu.id == id).delete()
 
+    # db.commit()
 
-def create_dish(submenu_id, db: Session, dish: schemas.MenuCreate):
-    new_dish = models.Dish(
-        title=dish.title,
-        description=dish.description,
-        submenu_id=submenu_id,
-        price=dish.price,
-    )
 
-    db.add(new_dish)
-    db.commit()
-    db.refresh(new_dish)
+# def update_submenu_by_id(db: Session, submenu: schemas.MenuCreate, id: str):
+    # update_menu = db.query(models.Submenu).filter(models.Submenu.id == id)
 
-    return new_dish
+    # update_menu.update(submenu.dict(), synchronize_session=False)
 
+    # db.commit()
 
-def get_dishes(submenu_id, db: Session, skip: int = 0, limit: int = 100):
-    return (
-        db.query(models.Dish)
-        .filter(models.Dish.submenu_id == submenu_id)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    # return update_menu.first()
 
 
-def get_dish_by_title(db: Session, title: str):
-    return db.query(models.Dish).filter(models.Dish.title == title).first()
+# # Dishes operations
 
 
-def get_dish_by_id(db: Session, id: str):
-    return db.query(models.Dish).filter(models.Dish.id == id).first()
+# def create_dish(submenu_id, db: Session, dish: schemas.MenuCreate):
+    # new_dish = models.Dish(
+        # title=dish.title,
+        # description=dish.description,
+        # submenu_id=submenu_id,
+        # price=dish.price,
+    # )
 
+    # db.add(new_dish)
+    # db.commit()
+    # db.refresh(new_dish)
 
-def delete_dish_by_id(db: Session, id: str):
-    db.query(models.Dish).filter(models.Dish.id == id).delete()
+    # return new_dish
 
-    db.commit()
 
+# def get_dishes(submenu_id, db: Session, skip: int = 0, limit: int = 100):
+    # return (
+        # db.query(models.Dish)
+        # .filter(models.Dish.submenu_id == submenu_id)
+        # .offset(skip)
+        # .limit(limit)
+        # .all()
+    # )
 
-def update_dish_by_id(db: Session, dish: schemas.DishCreate, id: str):
-    update_dish = db.query(models.Dish).filter(models.Dish.id == id)
 
-    update_dish.update(dish.dict(), synchronize_session=False)
+# def get_dish_by_title(db: Session, title: str):
+    # return db.query(models.Dish).filter(models.Dish.title == title).first()
 
-    db.commit()
 
-    return update_dish.first()
+# def get_dish_by_id(db: Session, id: str):
+    # return db.query(models.Dish).filter(models.Dish.id == id).first()
 
 
-def get_menu_submenus_count(db, menu_id):
-    return len(db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all())
+# def delete_dish_by_id(db: Session, id: str):
+    # db.query(models.Dish).filter(models.Dish.id == id).delete()
 
+    # db.commit()
 
-def get_sumbenus_dishes_count(db, submenu_id):
-    return len(db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).all())
 
+# def update_dish_by_id(db: Session, dish: schemas.DishCreate, id: str):
+    # update_dish = db.query(models.Dish).filter(models.Dish.id == id)
 
-def get_menus_dishes_count(db, menu_id):
-    return len(
-        db.query(models.Dish)
-        .join(models.Submenu)
-        .filter(models.Submenu.menu_id == menu_id)
-        .all()
-    )
+    # update_dish.update(dish.dict(), synchronize_session=False)
+
+    # db.commit()
+
+    # return update_dish.first()

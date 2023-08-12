@@ -14,8 +14,8 @@ class MenuService:
         self.notificiation = NotificationRepository('menu')
         self.cache_repository = MenuCacheRepository('menu', 'menus')
 
-    def create(self, url_key: str, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
-        new_menu = self.database_repository.add(menu_data, **kwargs)
+    async def create(self, url_key: str, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
+        new_menu = await self.database_repository.add(menu_data, **kwargs)
         self.cache_repository.invalidate_all_related_cache(url_key)
         return new_menu
 

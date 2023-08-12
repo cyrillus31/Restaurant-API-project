@@ -6,12 +6,12 @@ from ..services import MenuService
 router = APIRouter(prefix='/api/v1/menus', tags=['Menus'])
 
 
-# @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
-# def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
-    # return menu.create(
-        # url_key='menus/',
-        # menu_data=menu_data
-    # )
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
+async def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
+    return await menu.create(
+        url_key='menus/',
+        menu_data=menu_data
+    )
 
 
 # @router.delete('/{id}', status_code=status.HTTP_200_OK)
