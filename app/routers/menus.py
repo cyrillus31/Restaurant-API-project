@@ -6,38 +6,38 @@ from ..services import MenuService
 router = APIRouter(prefix='/api/v1/menus', tags=['Menus'])
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
-def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
-    return menu.create(
-        url_key='menus/',
-        menu_data=menu_data
-    )
+# @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
+# def create_menu(menu_data: schemas.MenuCreate, menu: MenuService = Depends()):
+    # return menu.create(
+        # url_key='menus/',
+        # menu_data=menu_data
+    # )
 
 
-@router.delete('/{id}', status_code=status.HTTP_200_OK)
-def delete_menu(id: str, menu: MenuService = Depends()):
-    return menu.delete(
-        url_key=f'menus/{id}/',
-        id=id
-    )
+# @router.delete('/{id}', status_code=status.HTTP_200_OK)
+# def delete_menu(id: str, menu: MenuService = Depends()):
+    # return menu.delete(
+        # url_key=f'menus/{id}/',
+        # id=id
+    # )
 
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=list[schemas.MenuOut | None])
-def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
-    return menu.get_all(
+async def read_menus(skip: int = 0, limit: int = 100, menu: MenuService = Depends()):
+    return await menu.get_all(
         url_key='menus/',
         skip=skip,
         limit=limit
     )
 
 
-@router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-def get_menu(id: str, menu: MenuService = Depends()):
-    return menu.get(
-        url_key=f'menus/{id}/',
-        id=id)
+# @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
+# def get_menu(id: str, menu: MenuService = Depends()):
+    # return menu.get(
+        # url_key=f'menus/{id}/',
+        # id=id)
 
 
-@router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
-def update_menu(menu_data: schemas.MenuCreate, id: str, menu: MenuService = Depends()):
-    return menu.update(menu_data, id=id)
+# @router.patch('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.MenuOut)
+# def update_menu(menu_data: schemas.MenuCreate, id: str, menu: MenuService = Depends()):
+    # return menu.update(menu_data, id=id)

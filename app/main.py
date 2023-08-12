@@ -2,22 +2,28 @@ from fastapi import FastAPI
 from sqlalchemy_utils import create_database, database_exists
 
 from . import models
-from .database import engine
+from .database import engine, Base
 from .routers import dishes, menus, submenus
 
 # create database
-if not database_exists(engine.url):
-    create_database(engine.url)
+# if not database_exists(engine.url):
+    # create_database(engine.url)
 
 # create tables
-models.Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
+
+
+# # create database tables
+# async def init_models():
+    # async with engine.begin() as conn:
+        # await conn.run_sync(Base.metadata.create_all)
 
 
 app = FastAPI()
 
 app.include_router(menus.router)
-app.include_router(submenus.router)
-app.include_router(dishes.router)
+# app.include_router(submenus.router)
+# app.include_router(dishes.router)
 
 
 @app.get('/api/v1/')

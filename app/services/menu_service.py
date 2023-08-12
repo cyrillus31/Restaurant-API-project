@@ -24,14 +24,14 @@ class MenuService:
         self.cache_repository.invalidate_all_related_cache(url_key)
         return self.notificiation.delete_success()
 
-    def get_all(self, url_key: str, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | dict | None]:
+    async def get_all(self, url_key: str, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | dict | None]:
         cached_response = self.cache_repository.get_all(url_key)
 
         if cached_response:
             print('cache list hit')
             return cached_response
 
-        all_menus = self.database_repository.get_all(**kwargs)
+        all_menus = await self.database_repository.get_all(**kwargs)
         self.cache_repository.add_list(url_key, all_menus)
 
         return all_menus  # type: ignore

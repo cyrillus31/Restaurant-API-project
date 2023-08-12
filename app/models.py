@@ -1,13 +1,26 @@
 import uuid
 
+
+
 from sqlalchemy import Column, ForeignKey, String
+
+
 from sqlalchemy.orm import relationship
+
+
 from sqlalchemy.sql.expression import text  # to insert sql functions as a text
+
+
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from .database import Base, get_db
 
-db = get_db()
+
+from .database import Base, get_session
+
+
+
+
+
 
 
 class Menu(Base):
@@ -21,15 +34,15 @@ class Menu(Base):
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text('now()')
     )
-
     submenus = relationship('Submenu')
     submenus_count = 0
     dishes_count = 0
 
 
+
+
 class Submenu(Base):
     __tablename__ = 'submenu'
-
     id = Column(
         String, primary_key=True, nullable=False, default=lambda: str(uuid.uuid4())
     )
@@ -40,9 +53,10 @@ class Submenu(Base):
     )
     menu_id = Column(String, ForeignKey(
         'menu.id', ondelete='CASCADE'), nullable=False)
-
     dishes_relation = relationship('Dish')
     dishes_count = 0
+
+
 
 
 class Dish(Base):
@@ -59,3 +73,4 @@ class Dish(Base):
     submenu_id = Column(
         String, ForeignKey('submenu.id', ondelete='CASCADE'), nullable=False
     )
+
