@@ -1,6 +1,6 @@
+from databases import Database
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from databases import Database
 
 from .. import crud, models, schemas
 from ..database import database
