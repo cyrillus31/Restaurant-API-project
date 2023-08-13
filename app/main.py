@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 
 from . import models
-from .database import engine, Base, init_db
+from .database import Base, engine, init_db
 from .routers import dishes, menus, submenus
-
 
 # create tables
 # Base.metadata.create_all(engine)
@@ -11,8 +10,8 @@ from .routers import dishes, menus, submenus
 
 # # create database tables
 # async def init_models():
-    # async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.create_all)
+# async with engine.begin() as conn:
+# await conn.run_sync(Base.metadata.create_all)
 
 
 app = FastAPI()
@@ -20,6 +19,7 @@ app = FastAPI()
 app.include_router(menus.router)
 app.include_router(submenus.router)
 app.include_router(dishes.router)
+
 
 @app.on_event('startup')
 async def on_startup():

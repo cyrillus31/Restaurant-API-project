@@ -35,20 +35,20 @@ testing_async_session = sessionmaker(autocommit=False, autoflush=False,
 # create_database(engine.url)
 # @pytest.fixture()
 # def client():
-    # client = TestClient(app)
-    # return client
+# client = TestClient(app)
+# return client
 
 
 # @pytest.fixture()
 # def session():
-    # print('my session fixture ran')
-    # Base.metadata.drop_all(bind=engine)
-    # Base.metadata.create_all(bind=engine)
-    # db = TestingSessionLocal()
-    # try:
-        # yield db
-    # finally:
-        # db.close()
+# print('my session fixture ran')
+# Base.metadata.drop_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
+# db = TestingSessionLocal()
+# try:
+# yield db
+# finally:
+# db.close()
 
 
 @pytest.fixture(autouse=True, scope='session')
@@ -181,8 +181,8 @@ async def test_submenus(session, test_menus):
 async def test_dishes(session, test_menus, test_submenus):
     menu_id = test_menus[0].id
     result = (
-    await session.execute(select(models.Submenu).filter(
-    models.Submenu.menu_id == menu_id))
+        await session.execute(select(models.Submenu).filter(
+            models.Submenu.menu_id == menu_id))
     )
     related_submenus = result.scalars().all()
 

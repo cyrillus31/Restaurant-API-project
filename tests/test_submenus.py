@@ -5,11 +5,13 @@ from app import models, schemas
 # CRUD testing
 
 # async def filter_query(session, orm_model, **kwargs) -> list:
-    # query = select(orm_model).filter_by(**kwargs)
-    # result = await session.execute(query)
-    # return result.scalars().all()
+# query = select(orm_model).filter_by(**kwargs)
+# result = await session.execute(query)
+# return result.scalars().all()
 
 # Create testing
+
+
 async def test_create_menu(session, client, PREFIX, test_menus):
     menu_id = test_menus[0].id
     create_data = {

@@ -1,12 +1,10 @@
 from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-
+from sqlalchemy.orm import Session
 
 from .. import crud, models
 from ..database import get_session
 from .menu_repository import MenuRepository
-
 
 
 class SubmenuRepository(MenuRepository):
@@ -16,10 +14,9 @@ class SubmenuRepository(MenuRepository):
         self.detail_404 = 'submenu not found'
         self.detail_400 = 'Submenu with this title already exists'
 
-
     async def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | None]:
         # menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
-            # skip).limit(limit).all()
+        # skip).limit(limit).all()
 
         lookup_query = select(self.orm_model).filter_by(**kwargs).offset(skip).limit(limit)
         result = await self.db.execute(lookup_query)
@@ -30,10 +27,9 @@ class SubmenuRepository(MenuRepository):
                 self.db, db_menu.id)
         return menus
 
-
     async def get(self, **kwargs):
         # menu = self.db.query(
-            # self.orm_model).filter_by(**kwargs).first()
+        # self.orm_model).filter_by(**kwargs).first()
         lookup_query = select(self.orm_model).filter_by(**kwargs)
         result = await self.db.execute(lookup_query)
         menu = result.scalars().first()
@@ -43,4 +39,3 @@ class SubmenuRepository(MenuRepository):
         # count submenus and dishes
         menu.dishes_count = await crud.get_sumbenus_dishes_count(self.db, menu.id)
         return menu
-

@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
-from sqlalchemy import select, update, delete
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from .. import crud, models, schemas
 from ..database import get_session
@@ -17,7 +17,7 @@ class MenuRepository:
 
     async def get_all(self, skip: int = 0, limit: int = 100, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | None]:
         # menus = self.db.query(self.orm_model).filter_by(**kwargs).offset(
-            # skip).limit(limit).all()
+        # skip).limit(limit).all()
         lookup_query = select(self.orm_model).filter_by(**kwargs).offset(skip).limit(limit)
         result = await self.db.execute(lookup_query)
         menus = result.scalars().all()
@@ -32,7 +32,7 @@ class MenuRepository:
 
     async def get(self, **kwargs):
         # menu = self.db.query(
-            # self.orm_model).filter_by(**kwargs).first()
+        # self.orm_model).filter_by(**kwargs).first()
         lookup_query = select(self.orm_model).filter_by(**kwargs)
         result = await self.db.execute(lookup_query)
         menu = result.scalars().first()
@@ -47,7 +47,7 @@ class MenuRepository:
 
     async def add(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         # menu_exists = self.db.query(self.orm_model).filter(
-            # self.orm_model.title == menu.title).filter_by(**kwargs).first()
+        # self.orm_model.title == menu.title).filter_by(**kwargs).first()
         lookup_query = select(self.orm_model).filter(self.orm_model.title == menu.title).filter_by(**kwargs)
         result = await self.db.execute(lookup_query)
         menu_exists = result.scalars().first()
@@ -77,7 +77,7 @@ class MenuRepository:
 
     async def update(self, menu: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | None:
         # menu_exists = self.db.query(self.orm_model).filter(
-            # self.orm_model.id == id).filter_by(**kwargs).first()
+        # self.orm_model.id == id).filter_by(**kwargs).first()
         lookup_query = select(self.orm_model).filter_by(id=id)
         result = await self.db.execute(lookup_query)
         menu_exists = result.scalars().first()
@@ -88,8 +88,8 @@ class MenuRepository:
         update_query = update(self.orm_model).where(self.orm_model.id == id).values({**menu.dict(), **kwargs})
         result = await self.db.execute(update_query)
         # update_menu = await self.db.query(
-            # self.orm_model).filter(self.orm_model.id == id)
-        
+        # self.orm_model).filter(self.orm_model.id == id)
+
         await self.db.commit()
         result = await self.db.execute(lookup_query)
         updated_menu = result.scalars().first()

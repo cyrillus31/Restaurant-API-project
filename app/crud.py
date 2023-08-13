@@ -6,8 +6,6 @@ from . import models, schemas
 # Menu Operations
 
 
-
-
 async def get_menu_submenus_count(db, menu_id):
     # return len(db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all())
     query = select(models.Submenu).filter(models.Submenu.menu_id == menu_id)
@@ -20,7 +18,6 @@ async def get_sumbenus_dishes_count(db, submenu_id):
     query = select(models.Dish).filter(models.Dish.submenu_id == submenu_id)
     result = await db.execute(query)
     return len(result.scalars().all())
-
 
 
 async def get_menus_dishes_count(db, menu_id):
@@ -74,9 +71,9 @@ async def get_menus_dishes_count(db, menu_id):
 
 # def create_submenu(menu_id, db: Session, submenu: schemas.MenuCreate):
     # new_submenu = models.Submenu(
-        # title=submenu.title,
-        # description=submenu.description,
-        # menu_id=menu_id,
+    # title=submenu.title,
+    # description=submenu.description,
+    # menu_id=menu_id,
     # )
 
     # db.add(new_submenu)
@@ -90,11 +87,11 @@ async def get_menus_dishes_count(db, menu_id):
 
 # def get_submenus(menu_id, db: Session, skip: int = 0, limit: int = 100):
     # return (
-        # db.query(models.Submenu)
-        # .filter(models.Submenu.menu_id == menu_id)
-        # .offset(skip)
-        # .limit(limit)
-        # .all()
+    # db.query(models.Submenu)
+    # .filter(models.Submenu.menu_id == menu_id)
+    # .offset(skip)
+    # .limit(limit)
+    # .all()
     # )
 
 
@@ -129,10 +126,10 @@ async def get_menus_dishes_count(db, menu_id):
 
 # def create_dish(submenu_id, db: Session, dish: schemas.MenuCreate):
     # new_dish = models.Dish(
-        # title=dish.title,
-        # description=dish.description,
-        # submenu_id=submenu_id,
-        # price=dish.price,
+    # title=dish.title,
+    # description=dish.description,
+    # submenu_id=submenu_id,
+    # price=dish.price,
     # )
 
     # db.add(new_dish)
@@ -144,11 +141,11 @@ async def get_menus_dishes_count(db, menu_id):
 
 # def get_dishes(submenu_id, db: Session, skip: int = 0, limit: int = 100):
     # return (
-        # db.query(models.Dish)
-        # .filter(models.Dish.submenu_id == submenu_id)
-        # .offset(skip)
-        # .limit(limit)
-        # .all()
+    # db.query(models.Dish)
+    # .filter(models.Dish.submenu_id == submenu_id)
+    # .offset(skip)
+    # .limit(limit)
+    # .all()
     # )
 
 

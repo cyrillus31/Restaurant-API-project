@@ -46,7 +46,6 @@ async def test_read_menus(session, client, PREFIX, test_menus):
     assert len(validated_menus_list) == len(test_menus)
 
 
-
 async def test_read_menus_empty(session, client, PREFIX):
     res = await client.get(f'{PREFIX}/menus/')
     assert res.status_code == 200
@@ -67,7 +66,6 @@ async def test_update_menu(session, client, PREFIX, test_menus):
     updated_menu = schemas.MenuOut(**res.json())
     assert updated_menu.title == update_data['title']
     assert updated_menu.description == update_data['description']
-
 
 
 async def test_update_menu_not_exists(session, client, PREFIX, test_menus):
@@ -94,7 +92,6 @@ async def test_delete_menu(session, client, PREFIX, test_menus):
     result = await session.execute(select(models.Menu))
     all_menus_list = result.scalars().all()
     assert len(all_menus_list) == len(test_menus) - 1
-
 
 
 async def test_delete_menu_not_exists(session, client, PREFIX, test_menus):

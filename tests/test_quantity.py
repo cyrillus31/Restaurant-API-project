@@ -1,7 +1,5 @@
-from sqlalchemy import select
-
 import pytest
-from sqlalchemy import and_
+from sqlalchemy import and_, select
 
 from app import models
 
@@ -23,8 +21,8 @@ async def test_submenus_quantitiy_in_menu(
     res = await client.get(f'{PREFIX}/menus/{menu_id}')
     result = (
         await session.execute(select(models.Submenu)
-        .join(models.Menu)
-        .filter(models.Submenu.menu_id == menu_id))
+                              .join(models.Menu)
+                              .filter(models.Submenu.menu_id == menu_id))
     )
     db_submenus_count = result.scalars().all()
     print(len(db_submenus_count), res.json())
@@ -52,8 +50,8 @@ async def test_dishes_quantitiy_in_menu(
     res = await client.get(f'{PREFIX}/menus/{menu_id}')
     result = (
         await session.execute(select(models.Dish)
-        .join(models.Submenu)
-        .filter(models.Submenu.menu_id == menu_id))
+                              .join(models.Submenu)
+                              .filter(models.Submenu.menu_id == menu_id))
     )
     db_dishes_count = result.scalars().all()
     print(len(db_dishes_count), res.json())
@@ -73,15 +71,15 @@ async def test_dishes_quantitiy_in_submenu(
     menu_id = test_menus[menu_index].id
     result = (
         await session.execute(select(models.Submenu)
-        .filter(models.Submenu.menu_id == menu_id))
+                              .filter(models.Submenu.menu_id == menu_id))
     )
     submenu_id = result.scalars().first().id
 
     res = await client.get(f'{PREFIX}/menus/{menu_id}/submenus/{submenu_id}')
     result = (
         await session.execute(select(models.Dish)
-        .join(models.Submenu)
-        .filter(
+                              .join(models.Submenu)
+                              .filter(
             and_(models.Submenu.id == submenu_id,
                  models.Submenu.menu_id == menu_id)))
     )

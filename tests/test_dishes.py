@@ -6,7 +6,7 @@ from app import models, schemas
 # CRUD testing
 async def submenu_id_search(session, menu_id) -> int:
     result = (
-            await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
+        await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
     )
     submenu_id = result.scalars().first().id
     return submenu_id
@@ -14,7 +14,7 @@ async def submenu_id_search(session, menu_id) -> int:
 
 async def dish_id_search(session, submenu_id) -> int:
     result = (
-            await session.execute(select(models.Dish).filter(models.Dish.submenu_id == submenu_id))
+        await session.execute(select(models.Dish).filter(models.Dish.submenu_id == submenu_id))
     )
     dish_id = result.scalars().first().id
     return dish_id
@@ -46,8 +46,8 @@ async def test_create_dish(session, client, PREFIX, test_menus, test_submenus):
 # Read testing
 async def test_get_dish(session, client, PREFIX, test_menus, test_submenus, test_dishes):
     menu_id = test_menus[0].id
-    submenu_id = await submenu_id_search(session, menu_id) 
-    dish_id = await dish_id_search(session, submenu_id) 
+    submenu_id = await submenu_id_search(session, menu_id)
+    dish_id = await dish_id_search(session, submenu_id)
     res = await client.get(
         f'{PREFIX}/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}')
     print('Test request was sent to', res.url)
@@ -64,7 +64,7 @@ async def test_get_menu_not_exists(
     session, client, PREFIX, test_menus, test_submenus, test_dishes
 ):
     menu_id = test_menus[0].id
-    submenu_id = await submenu_id_search(session, menu_id) 
+    submenu_id = await submenu_id_search(session, menu_id)
 
     res = await client.get(
         f'{PREFIX}/menus/{menu_id}/submenus/{submenu_id}/dishes/9876543210'
@@ -161,7 +161,7 @@ async def test_delete_dish(session, client, PREFIX, test_menus, test_submenus, t
     assert res.json()['status'] is True
     assert res.json()['message'] == 'The dish has been deleted'
 
-    result = await session.execute(select((models.Dish)))
+    result = await session.execute(select(models.Dish))
     all_dishes_list = result.scalars().all()
     assert len(all_dishes_list) == len(test_dishes) - 1
 
