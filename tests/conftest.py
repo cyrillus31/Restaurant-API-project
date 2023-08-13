@@ -16,15 +16,15 @@ from app.database import Base, get_session
 from app.main import app
 from app.repositories import MenuCacheRepository
 
-SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
+# SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 ASYNC_SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 
-async_engine = create_async_engine(ASYNC_SQLACHLEMY_DATABASE_URL, echo=True,)
+async_engine = create_async_engine(ASYNC_SQLACHLEMY_DATABASE_URL, echo=False,)
 
 testing_async_session = sessionmaker(autocommit=False, autoflush=False,
                                      bind=async_engine, class_=AsyncSession, expire_on_commit=False)
@@ -33,22 +33,22 @@ testing_async_session = sessionmaker(autocommit=False, autoflush=False,
 # creating test database
 # if not database_exists(engine.url):
 # create_database(engine.url)
-@pytest.fixture()
-def client():
-    client = TestClient(app)
-    return client
+# @pytest.fixture()
+# def client():
+    # client = TestClient(app)
+    # return client
 
 
-@pytest.fixture()
-def session():
-    print('my session fixture ran')
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# @pytest.fixture()
+# def session():
+    # print('my session fixture ran')
+    # Base.metadata.drop_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
+    # db = TestingSessionLocal()
+    # try:
+        # yield db
+    # finally:
+        # db.close()
 
 
 @pytest.fixture(autouse=True, scope='session')
@@ -67,7 +67,7 @@ def anyio_backend():
 
 
 @pytest.fixture(scope='function')
-async def async_session():
+async def session():
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -93,7 +93,7 @@ def event_loop():
 
 
 @pytest.fixture()
-async def async_client() -> AsyncGenerator[AsyncClient, None]:
+async def client() -> AsyncGenerator[AsyncClient, None]:
     async def override_get_async_session():
         async with testing_async_session() as session:
             yield session
@@ -130,7 +130,7 @@ Restaurant
 
 
 @pytest.fixture(scope='function')
-async def test_menus(async_session):
+async def test_menus(session):
     menus_data = [
         {'title': 'test menu 1', 'description': 'description of test menu 1'},
         {'title': 'test menu 2', 'description': 'description of test menu 2'},
@@ -138,15 +138,15 @@ async def test_menus(async_session):
     ]
 
     new_menus = [models.Menu(**menu) for menu in menus_data]
-    async_session.add_all(new_menus)
-    await async_session.commit()
-    result = await async_session.execute(select(models.Menu))
+    session.add_all(new_menus)
+    await session.commit()
+    result = await session.execute(select(models.Menu))
     db_new_menus_list = result.scalars().all()
     return db_new_menus_list
 
 
 @pytest.fixture(scope='function')
-async def test_submenus(async_session, test_menus):
+async def test_submenus(session, test_menus):
     menu1_id = test_menus[0].id
     menu2_id = test_menus[1].id
     # menu3_id = test_menus[2].id
@@ -170,18 +170,18 @@ async def test_submenus(async_session, test_menus):
     ]
 
     new_submenus = [models.Submenu(**submenu) for submenu in submenus_data]
-    async_session.add_all(new_submenus)
-    await async_session.commit()
-    result = await async_session.execute(select(models.Submenu))
+    session.add_all(new_submenus)
+    await session.commit()
+    result = await session.execute(select(models.Submenu))
     db_new_submenus_list = result.scalars().all()
     return db_new_submenus_list
 
 
 @pytest.fixture(scope='function')
-async def test_dishes(async_session, test_menus, test_submenus):
+async def test_dishes(session, test_menus, test_submenus):
     menu_id = test_menus[0].id
     related_submenus = (
-    async_session.query(models.Submenu).filter(
+    session.query(models.Submenu).filter(
     models.Submenu.menu_id == menu_id).all()
     )
 
@@ -212,8 +212,8 @@ async def test_dishes(async_session, test_menus, test_submenus):
     ]
 
     new_dishes = [models.Dish(**dish) for dish in dishes_data]
-    async_session.add_all(new_dishes)
-    await async_session.commit()
-    result = await async_session.execute(select(models.Dish))
+    session.add_all(new_dishes)
+    await session.commit()
+    result = await session.execute(select(models.Dish))
     db_new_dishes_list = result.scalars().all()
     return db_new_dishes_list
