@@ -1,19 +1,20 @@
+import asyncio
 import pytest
 from httpx import AsyncClient
 
 from app import models, schemas
 
+pytestmark = pytest.mark.anyio
 # CRUD testing
 
 
 # Create testing
-@pytest.mark.anyio
-async def test_create_menu(client: AsyncClient, PREFIX):
+async def test_create_menu(async_session, async_client, PREFIX):
     create_data = {
-        'title': 'test menu 1 title',
+        'title': 'test menu 1111 title',
         'description': 'test menu 1 description',
     }
-    res = await client.post(f'{PREFIX}/menus/', json=create_data)
+    res = await async_client.post(f'{PREFIX}/menus/', json=create_data)
     print('Test request was sent to', res.url)
     assert res.status_code == 201
     created_menu = schemas.MenuOut(**res.json())
@@ -21,16 +22,13 @@ async def test_create_menu(client: AsyncClient, PREFIX):
     assert created_menu.description == create_data['description']
 
 
-# # Read testing
-# @pytest.mark.anyio
-# async def test_get_menu(session, client, PREFIX, test_menus):
-    # test_menu_id = test_menus[0].id
-    # print(session.query(models.Menu).first().created_at)
-    # res = client.get(f'{PREFIX}/menus/{test_menu_id}')
-    # print('Test request was sent to', res.url, res.content)
-    # assert res.status_code == 200
-    # response_menu = schemas.MenuOut(**res.json())
-    # assert response_menu.title == test_menus[0].title
+# Read testing
+async def test_get_menu(async_session, async_client, PREFIX, test_menus):
+    test_menu_id = test_menus[0].id
+    res = await async_client.get(f'{PREFIX}/menus/{test_menu_id}')
+    assert res.status_code == 200
+    response_menu = schemas.MenuOut(**res.json())
+    assert response_menu.title == test_menus[0].title
 
 
 # @pytest.mark.anyio

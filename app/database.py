@@ -18,17 +18,13 @@ Base = declarative_base()
 if not database_exists(SQLACHLEMY_DATABASE_URL.replace("+asyncpg", "")):
     create_database(SQLACHLEMY_DATABASE_URL.replace("+asyncpg", ""))
 
-async def get_session() -> AsyncSession:
-
-    async with async_session() as session:
-        yield session
-    # db = SessionLocal()
-    # try:
-        # yield db
-    # finally:
-        # db.close()
-
-
+# create tables
 async def init_db(engine):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+async def get_session() -> AsyncSession:
+    async with async_session() as session:
+        yield session
+
+
