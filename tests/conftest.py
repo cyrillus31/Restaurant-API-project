@@ -146,7 +146,7 @@ async def test_menus(async_session):
 
 
 @pytest.fixture(scope='function')
-def test_submenus(async_session, test_menus):
+async def test_submenus(async_session, test_menus):
     menu1_id = test_menus[0].id
     menu2_id = test_menus[1].id
     # menu3_id = test_menus[2].id
@@ -178,7 +178,7 @@ def test_submenus(async_session, test_menus):
 
 
 @pytest.fixture(scope='function')
-def test_dishes(async_session, test_menus, test_submenus):
+async def test_dishes(async_session, test_menus, test_submenus):
     menu_id = test_menus[0].id
     related_submenus = (
     async_session.query(models.Submenu).filter(
