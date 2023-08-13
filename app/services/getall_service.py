@@ -46,9 +46,9 @@ class GetAllService:
 
         for menu in all_menus:
             related_submenus = await get_related_submenus_list(menu.id)
-            for submenu in related_submenus:
-                related_dishes = await get_related_dish_list(submenu.id)
-                result["all menus"].append({"menu": menu2dict(menu), "submenus": [{"submenu": submenu, "dishes": [dish for dish in map(dish2dict, related_dishes)]} for submenu in map(submenu2dict, related_submenus)]})
+            result["all menus"].append({"menu": menu2dict(menu), "submenus": 
+            [{"submenu": submenu, "dishes": [dish for dish in map(dish2dict, await get_related_dish_list(submenu["id"]))]} 
+            for submenu in map(submenu2dict, related_submenus)]})
 
         self.cache_repository.add_tree(url_key, result)
 
