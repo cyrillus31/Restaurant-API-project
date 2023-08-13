@@ -25,26 +25,26 @@ class MenuService:
         return self.notificiation.delete_success()
 
     async def get_all(self, url_key: str, **kwargs) -> list[models.Menu | models.Submenu | models.Dish | dict | None]:
-        cached_response = self.cache_repository.get_all(url_key)
+        cached_response = await self.cache_repository.get_all(url_key)
 
         if cached_response:
             print('cache list hit')
             return cached_response
 
         all_menus = await self.database_repository.get_all(**kwargs)
-        self.cache_repository.add_list(url_key, all_menus)
+        await self.cache_repository.add_list(url_key, all_menus)
 
         return all_menus  # type: ignore
 
     async def get(self, url_key: str, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:
-        cached_response = self.cache_repository.get(url_key)
+        cached_response = await self.cache_repository.get(url_key)
         if cached_response:  # if cache exists return cached response
             print('cache hit')
             return cached_response
 
         menu = await self.database_repository.get(**kwargs)
 
-        self.cache_repository.add(url_key, menu)
+        await self.cache_repository.add(url_key, menu)
         return menu
 
     async def update(self, menu_data: schemas.MenuCreate | schemas.SubmenuCreate | schemas.DishCreate, id, background_tasks: BackgroundTasks, **kwargs) -> models.Menu | models.Submenu | models.Dish | dict | None:

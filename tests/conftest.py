@@ -57,8 +57,8 @@ def PREFIX():
 
 
 @pytest.fixture(autouse=True, scope='function')  # test empty cache
-def empty_cache():
-    MenuCacheRepository.deinitialize_all()
+async def empty_cache():
+    await MenuCacheRepository.deinitialize_all()
 
 
 @pytest.fixture(scope='session')

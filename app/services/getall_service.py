@@ -27,7 +27,7 @@ class GetAllService:
 
     async def get_all(self, url_key: str,):
         result = {'all menus': []}
-        cached_response = self.cache_repository.get_tree(url_key)
+        cached_response = await self.cache_repository.get_tree(url_key)
 
         if cached_response:
             print('cache list hit')
@@ -50,6 +50,6 @@ class GetAllService:
                                         [{'submenu': submenu, 'dishes': [dish for dish in map(dish2dict, await get_related_dish_list(submenu['id']))]}
                                          for submenu in map(submenu2dict, related_submenus)]})
 
-        self.cache_repository.add_tree(url_key, result)
+        await self.cache_repository.add_tree(url_key, result)
 
         return result
