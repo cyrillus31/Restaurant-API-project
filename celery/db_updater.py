@@ -2,12 +2,13 @@ import os
 import sys
 import asyncio
 
+path = os.getcwd()
+sys.path.append(path)
+
 from sqlalchemy import select, update, delete
 from sqlalchemy_utils import database_exists, create_database
 from asyncpg.exceptions import UniqueViolationError
 
-path = os.getcwd()
-sys.path.append(path)
 
 from xlsx_parser import parser
 from app.database import async_session, get_session, engine
