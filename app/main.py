@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from . import models
 from .database import Base, engine, init_db
-from .routers import dishes, menus, submenus
+from .routers import dishes, menus, submenus, getall
 
 # create tables
 # Base.metadata.create_all(engine)
@@ -19,6 +19,7 @@ app = FastAPI()
 app.include_router(menus.router)
 app.include_router(submenus.router)
 app.include_router(dishes.router)
+app.include_router(getall.router)
 
 
 @app.on_event('startup')
