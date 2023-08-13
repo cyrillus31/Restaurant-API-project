@@ -30,19 +30,25 @@ class GetAllService:
             # print('cache list hit')
             # return cached_response
 
-        async def get_related_submenus_list(menu_id) -> list:
+        async def get_related_submenus_list(menu_id=None) -> list:
             return await self.submenu_repo.get_all(menu_id=menu_id)
 
-        async def get_related_dish_list(submenu_id) -> list:
+        async def get_related_dish_list(submenu_id=None) -> list:
             return await self.dish_repo.get_all(submenu_id=submenu_id)
         
         all_menus = await self.menu_repo.get_all()
 
+        async def all_sumbenus_func() -> list:
+            pass        
+
+
         for menu in all_menus:
             related_submenus = await get_related_submenus_list(menu.id)
-            # result["all menus"].append({"menu": menu2dict(menu), "submenus": list(map(submenu2dict, related_submenus))})
+            # result["all menus"].append({"menu": menu2dict(menu), "submenus": []})
             for submenu in related_submenus:
                 related_dishes = await get_related_dish_list(submenu.id)
+                result["all menus"].append({"menu": menu2dict(menu), "submenus": [{"submenu": submenu, "dishes": [dish for dish in map(dish2dict, related_dishes)]} for submenu in map(submenu2dict, related_submenus)]})
+                # related_dishes = await get_related_dish_list(submenu.id)
 
         # self.cache_repository.add_tree(url_key, all_menus)
 
