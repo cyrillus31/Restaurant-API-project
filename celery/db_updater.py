@@ -1,19 +1,23 @@
+from app.database import async_session, get_session
+from app import models
+from xlsx_parser import parser
 import asyncio
-import aiohttp
+import os
+import sys
 
-from .xlsx_parser import parser
+path = os.getcwd()
+print(path)
+sys.path.append(path)
 
 
+menus, submenus, dishses = parser()
 
-async def call_url(session, url):
-    async with session.post(url) as response:
-        return await response.text()
 
 async def main():
-    urls = ["https://example.com", "https://example.org", "https://example.net"]
-    async with aiohttp.ClientSession() as session:
-        tasks = [call_url(session, url) for url in urls]
-        results = await asyncio.gather(*tasks)
-        print(results)
+    async with async_session() as session:
+        for menu in menus:
+            new_menu = models.Menu(**menu)
+            session.add(new_menu)
+            await session.commit()
 
 asyncio.run(main())
