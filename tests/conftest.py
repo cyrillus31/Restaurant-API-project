@@ -8,6 +8,7 @@ from httpx import AsyncClient
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine 
+from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker 
 from sqlalchemy_utils import create_database, database_exists
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -69,7 +70,9 @@ async def async_session():
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    yield testing_async_session
+    async with testing_async_session() as session:
+        yield session
+    # yield testing_async_session
     # yield async_engine
 
     async with async_engine.begin() as conn:
@@ -123,7 +126,7 @@ Restaurant
 
 
 @pytest.fixture(scope='function')
-async def test_menus(session):
+async def test_menus(async_session):
     menus_data = [
         {'title': 'test menu 1', 'description': 'description of test menu 1'},
         {'title': 'test menu 2', 'description': 'description of test menu 2'},
@@ -132,9 +135,11 @@ async def test_menus(session):
 
 
     new_menus = [models.Menu(**menu) for menu in menus_data]
-    session.add_all(new_menus)
-    session.commit()
-    db_new_menus_list = session.query(models.Menu).all()
+    async_session.add_all(new_menus)
+    await async_session.commit()
+    # db_new_menus_list = async_session.query(models.Menu).all()
+    result = await async_session.execute(select(models.Menu))
+    db_new_menus_list = result.scalars().all()
     return db_new_menus_list
 
 
