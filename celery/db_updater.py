@@ -14,19 +14,16 @@ from app.database import async_session, get_session, engine
 from app import models
 
 # create a database if not exists
-if not database_exists(engine.url.replace('+asyncpg', '')):
-    create_database(engine.url.replace('+asyncpg', ''))
+# if not database_exists(engine.url.replace('+asyncpg', '')):
+    # create_database(engine.url.replace('+asyncpg', ''))
 
 menus, submenus, dishes = parser()
 
 async def add_to_db(objects, session, orm_model):
     for object in objects:
-        try:
-            new_object = orm_model(**object)
-            session.add(new_object)
-            await session.commit()
-        except:
-            print("oops")
+        new_object = orm_model(**object)
+        session.add(new_object)
+        await session.commit()
 
 async def update_to_db(objects, session, orm_model):
     for object in objects:
