@@ -25,7 +25,7 @@ class TreeCacheRepository:
         print('cached list created')
         cache.set(key, json.dumps(dict_to_store), ex=CACHE_EXPIRE_TIME)
 
-    def drop_tree(url_key: str = "getall/") -> None:
+    def drop_tree(url_key: str = 'getall/') -> None:
         try:
             cache.delete(url_key)
 
@@ -82,10 +82,9 @@ class MenuCacheRepository:
         print('cached list created')
         cache.set(key, json.dumps(values), ex=CACHE_EXPIRE_TIME)
 
-
     def invalidate_update_cache(self, id: str):
         """This methods deletes cached list the updated http resource belongs to"""
-        
+
         TreeCacheRepository.drop_tree()
         # in case someone tries to update empty cache entires
         try:
@@ -114,7 +113,6 @@ class MenuCacheRepository:
 
         except redis.exceptions.ResponseError:
             pass
-        
 
     @classmethod
     def deinitialize_all(cls):
@@ -130,4 +128,3 @@ class SubmenuCacheRepository(MenuCacheRepository):
 
 class DishCacheRepository(MenuCacheRepository):
     pass
-

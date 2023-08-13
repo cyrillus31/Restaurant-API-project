@@ -114,15 +114,16 @@ TEST DATABASE STRUCTURE using fixtures
 Restaurant
 
 
-
+Restaurant
 ├── Menu 1
 │   ├── Submenu 1
 │   │   ├── Dish 1
 │   │   └── Dish 2
 │   └── Submenu 2
 │       └── Dish 3
-└── Menu 2
-    └── Submenu 3
+├── Menu 2
+│   └── Submenu 3
+└── Menu 3
 
 #######################################
 
