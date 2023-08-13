@@ -29,8 +29,9 @@ class TreeCacheRepository:
         try:
             cache.delete(url_key)
 
-        except redis.exceptions.ResponseError:
-            pass
+        except redis.exceptions.ResponseError as e:
+            print(e)
+            
 
 
 class MenuCacheRepository:
@@ -93,8 +94,8 @@ class MenuCacheRepository:
             print('the following objects were suppose to be  deleted: \n',
                   f'*{self.objects}/\n',
                   f'*{self.objects}/{id}/')
-        except redis.exceptions.ResponseError:
-            pass
+        except redis.exceptions.ResponseError as e:
+            print(e)
 
     def invalidate_all_related_cache(self, url_key: str):
 
@@ -111,8 +112,8 @@ class MenuCacheRepository:
                 print(f'cached object {url_to_delete} was deleted')
             cache.delete(*cache.keys(url_to_delete + '*'))
 
-        except redis.exceptions.ResponseError:
-            pass
+        except redis.exceptions.ResponseError as e:
+            print(e)
 
     @classmethod
     def deinitialize_all(cls):

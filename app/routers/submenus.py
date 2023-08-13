@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, BackgroundTasks
 
 from .. import schemas
 from ..services import SubmenuService
@@ -10,17 +10,19 @@ router = APIRouter(
 @router.post(
     '/', status_code=status.HTTP_201_CREATED, response_model=schemas.SubmenuOut
 )
-async def create_submenu(menu_id: str, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends()):
+async def create_submenu(background_tasks: BackgroundTasks, menu_id: str, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends(),):
     return await submenu.create(
         url_key=f'menus/{menu_id}/submenus/',
         menu_data=submenu_data,
+        background_tasks=background_tasks,
         menu_id=menu_id
     )
 
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
-async def delete_submenu(menu_id: str, id: str, submenu: SubmenuService = Depends()):
-    return await submenu.delete(
+async def delete_submenu(background_tasks: BackgroundTasks, menu_id: str, id: str, submenu: SubmenuService = Depends()):
+    return await submenu.delete( 
+        background_tasks=background_tasks,
         url_key=f'menus/{menu_id}/submenus/{id}/',
         id=id,
         menu_id=menu_id
@@ -54,5 +56,5 @@ async def get_submenu(id: str, menu_id: str, submenu: SubmenuService = Depends()
     '/{id}', status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut
 )
 async def update_submenu(
-        menu_id: str, id: str, submenu_data: schemas.MenuCreate, submenu: SubmenuService = Depends()):
-    return await submenu.update(submenu_data, id, menu_id=menu_id)
+        background_tasks: BackgroundTasks, menu_id: str, id: str, submenu_data: schemas.MenuCreate, submenu: SubmenuService = Depends()):
+    return await submenu.update(background_tasks=background_tasks, menu_data=submenu_data, id=id, menu_id=menu_id)
