@@ -180,10 +180,11 @@ async def test_submenus(session, test_menus):
 @pytest.fixture(scope='function')
 async def test_dishes(session, test_menus, test_submenus):
     menu_id = test_menus[0].id
-    related_submenus = (
-    session.query(models.Submenu).filter(
-    models.Submenu.menu_id == menu_id).all()
+    result = (
+    await session.execute(select(models.Submenu).filter(
+    models.Submenu.menu_id == menu_id))
     )
+    related_submenus = result.scalars().all()
 
     submenu1_id = related_submenus[0].id
     submenu2_id = related_submenus[1].id
