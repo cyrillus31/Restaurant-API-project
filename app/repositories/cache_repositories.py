@@ -8,7 +8,29 @@ from ..utils import dish2dict, menu2dict, submenu2dict
 
 cache = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
-CACHE_EXPIRE_TIME = 60
+CACHE_EXPIRE_TIME = 60  # seconds
+
+
+class TreeCacheRepository:
+    """FOR ADDING ALL MENUS, SUBMENUS AND DISHES"""
+    def get_tree(url_key: str) -> dict:
+        key = url_key
+        cached_response = cache.get(key)
+        if cached_response:
+            return json.loads(cached_response)
+        return None
+
+    def add_tree(url_key: str, dict_to_store: dict) -> None:
+        key = url_key
+        print('cached list created')
+        cache.set(key, json.dumps(dict_to_store), ex=CACHE_EXPIRE_TIME)
+
+    def drop_tree(url_key: str = "getall/") -> None:
+        try:
+            cache.delete(url_key)
+
+        except redis.exceptions.ResponseError:
+            pass
 
 
 class MenuCacheRepository:
@@ -63,6 +85,8 @@ class MenuCacheRepository:
 
     def invalidate_update_cache(self, id: str):
         """This methods deletes cached list the updated http resource belongs to"""
+        
+        TreeCacheRepository.drop_tree()
         # in case someone tries to update empty cache entires
         try:
             cache.delete(*cache.keys(f'*{self.objects}/'))
@@ -74,6 +98,9 @@ class MenuCacheRepository:
             pass
 
     def invalidate_all_related_cache(self, url_key: str):
+
+        TreeCacheRepository.drop_tree()
+
         try:
             split_url = url_key.split('/')
             url_to_delete = ''
@@ -87,6 +114,7 @@ class MenuCacheRepository:
 
         except redis.exceptions.ResponseError:
             pass
+        
 
     @classmethod
     def deinitialize_all(cls):
@@ -103,15 +131,3 @@ class SubmenuCacheRepository(MenuCacheRepository):
 class DishCacheRepository(MenuCacheRepository):
     pass
 
-
-class TreeCacheRepository:
-    """FOR ADDING ALL MENUS, SUBMENUS AND DISHES"""
-    def add_tree(url_key: str, response_orm_model_list: list[models.Menu | models.Submenu | models.Dish | None]) -> None:
-        values = [self.to_dict_func(one_model)  # type: ignore
-                    for one_model in response_orm_model_list]
-
-        # generate key from kwargs
-        key = url_key
-
-        print('cached list created')
-        cache.set(key, json.dumps(values), ex=CACHE_EXPIRE_TIME)

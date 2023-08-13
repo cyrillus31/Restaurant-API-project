@@ -12,4 +12,3 @@ async def get_all(getall: GetAllService = Depends(),):
     return await getall.get_all(
         url_key='getall/',
     )
-    # return {"message": "this is it!"}

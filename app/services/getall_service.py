@@ -7,6 +7,7 @@ from ..repositories import (
                             SubmenuRepository,
                             DishRepository,
                             NotificationRepository,
+                            TreeCacheRepository,
                             )
 
 
@@ -21,14 +22,15 @@ class GetAllService:
         self.menu_repo = menu_repo
         self.submenu_repo = submenu_repo
         self.dish_repo = dish_repo
+        self.cache_repository = TreeCacheRepository
         
     async def get_all(self, url_key: str,):
         result = {"all menus": []}
-        # cached_response = self.cache_repository.get_all(url_key)
+        cached_response = self.cache_repository.get_tree(url_key)
 
-        # if cached_response:
-            # print('cache list hit')
-            # return cached_response
+        if cached_response:
+            print('cache list hit')
+            return cached_response
 
         async def get_related_submenus_list(menu_id=None) -> list:
             return await self.submenu_repo.get_all(menu_id=menu_id)
@@ -44,12 +46,10 @@ class GetAllService:
 
         for menu in all_menus:
             related_submenus = await get_related_submenus_list(menu.id)
-            # result["all menus"].append({"menu": menu2dict(menu), "submenus": []})
             for submenu in related_submenus:
                 related_dishes = await get_related_dish_list(submenu.id)
                 result["all menus"].append({"menu": menu2dict(menu), "submenus": [{"submenu": submenu, "dishes": [dish for dish in map(dish2dict, related_dishes)]} for submenu in map(submenu2dict, related_submenus)]})
-                # related_dishes = await get_related_dish_list(submenu.id)
 
-        # self.cache_repository.add_tree(url_key, all_menus)
+        self.cache_repository.add_tree(url_key, result)
 
         return result  
