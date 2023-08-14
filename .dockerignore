@@ -5,3 +5,6 @@
 **/*.sh
 **/.pytest_cache
 **/.mypy*
+**/*.bak
+**/*.dat
+**/*.dir

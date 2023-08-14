@@ -7,3 +7,6 @@
 **/.mypy_cache
 # **/.env
 **/*ipynb*
+**/*.bak
+**/*.dat
+**/*.dir
