@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text  # to insert sql functions as a text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from .database import Base, get_session
+from .database import Base
 
 
 class Menu(Base):

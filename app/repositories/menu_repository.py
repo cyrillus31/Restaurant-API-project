@@ -1,7 +1,6 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from .. import crud, models, schemas
 from ..database import get_session

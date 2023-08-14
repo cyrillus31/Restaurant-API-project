@@ -1,0 +1,23 @@
+  version: "3"
+  services:
+    rabbit:
+      image: rabbitmq
+      # volumes:
+      # - .:/celery_tasks
+      ports:
+      - "5672:5672"
+      environment:
+        TZ: Europe/Moscow
+        # RABBITMQ_DEFAULT_USER: admin
+        # RABBITMQ_DEFAULT_PASS: admin
+
+    celery:
+      build: .
+      # volumes:
+      # - .:/celery_tasks
+      environment:
+        TZ: "Europe/Moscow"
+        # CELERY_BROKER_URL: "amqp://admin:admin@rabbit"
+      command: celery -A app.tasks.tasks beat --loglevel=DEBUG
+      depends_on:
+      - rabbit

@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 
-from . import models
-from .database import Base, engine, init_db
+from .database import engine, init_db
 from .routers import dishes, getall, menus, submenus
 
 # create tables

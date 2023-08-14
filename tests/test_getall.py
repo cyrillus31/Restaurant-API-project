@@ -1,8 +1,3 @@
-import pytest
-from sqlalchemy import and_, select
-
-from app import models
-
 """
 #######################################
 

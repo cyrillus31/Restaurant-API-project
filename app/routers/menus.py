@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 
 from .. import schemas
 from ..services import MenuService
@@ -17,7 +17,7 @@ async def create_menu(background_tasks: BackgroundTasks, menu_data: schemas.Menu
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
 async def delete_menu(background_tasks: BackgroundTasks, id: str, menu: MenuService = Depends()):
-    return await menu.delete( 
+    return await menu.delete(
         background_tasks=background_tasks,
         url_key=f'menus/{id}/',
         id=id
@@ -46,4 +46,4 @@ async def update_menu(background_tasks: BackgroundTasks, menu_data: schemas.Menu
         background_tasks=background_tasks,
         menu_data=menu_data,
         id=id
-    ) 
+    )

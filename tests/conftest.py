@@ -2,13 +2,10 @@ import asyncio
 from typing import AsyncGenerator
 
 import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from sqlalchemy import create_engine, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import create_database, database_exists
 
 from app import models
 from app.config import settings
@@ -16,39 +13,12 @@ from app.database import Base, get_session
 from app.main import app
 from app.repositories import MenuCacheRepository
 
-# SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
-
-# engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
-# TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 ASYNC_SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 
 async_engine = create_async_engine(ASYNC_SQLACHLEMY_DATABASE_URL, echo=False,)
 
 testing_async_session = sessionmaker(autocommit=False, autoflush=False,
                                      bind=async_engine, class_=AsyncSession, expire_on_commit=False)
-
-
-# creating test database
-# if not database_exists(engine.url):
-# create_database(engine.url)
-# @pytest.fixture()
-# def client():
-# client = TestClient(app)
-# return client
-
-
-# @pytest.fixture()
-# def session():
-# print('my session fixture ran')
-# Base.metadata.drop_all(bind=engine)
-# Base.metadata.create_all(bind=engine)
-# db = TestingSessionLocal()
-# try:
-# yield db
-# finally:
-# db.close()
 
 
 @pytest.fixture(autouse=True, scope='session')
@@ -73,13 +43,9 @@ async def session():
 
     async with testing_async_session() as session:
         yield session
-    # yield testing_async_session
-    # yield async_engine
 
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-
-# let test session to know it is running inside event loop
 
 
 @pytest.fixture(scope='session')
@@ -88,8 +54,6 @@ def event_loop():
     loop = policy.new_event_loop()
     yield loop
     loop.close()
-
-# async def client(session):
 
 
 @pytest.fixture()

@@ -2,11 +2,9 @@ from fastapi import Depends
 
 from app.utils import dish2dict, menu2dict, submenu2dict
 
-from .. import models, schemas
 from ..repositories import (
     DishRepository,
     MenuRepository,
-    NotificationRepository,
     SubmenuRepository,
     TreeCacheRepository,
 )
@@ -26,7 +24,7 @@ class GetAllService:
         self.cache_repository = TreeCacheRepository
 
     async def get_all(self, url_key: str,):
-        result = {'all menus': []}
+        result: dict = {'all menus': []}
         cached_response = await self.cache_repository.get_tree(url_key)
 
         if cached_response:
@@ -41,12 +39,9 @@ class GetAllService:
 
         all_menus = await self.menu_repo.get_all()
 
-        async def all_sumbenus_func() -> list:
-            pass
-
         for menu in all_menus:
-            related_submenus = await get_related_submenus_list(menu.id)
-            result['all menus'].append({'menu': menu2dict(menu), 'submenus':
+            related_submenus = await get_related_submenus_list(menu.id)  # type: ignore
+            result['all menus'].append({'menu': menu2dict(menu), 'submenus':  # type: ignore
                                         [{'submenu': submenu, 'dishes': [dish for dish in map(dish2dict, await get_related_dish_list(submenu['id']))]}
                                          for submenu in map(submenu2dict, related_submenus)]})
 

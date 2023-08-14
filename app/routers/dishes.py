@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 
 from .. import schemas
 from ..services import DishService
@@ -20,7 +20,7 @@ async def create_dish(background_tasks: BackgroundTasks, menu_id: str, submenu_i
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
 async def delete_dish(background_tasks: BackgroundTasks, menu_id: str, submenu_id: str, id: str, dish: DishService = Depends()):
-    return await dish.delete( 
+    return await dish.delete(
         background_tasks=background_tasks,
         url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/{id}/',
         id=id,

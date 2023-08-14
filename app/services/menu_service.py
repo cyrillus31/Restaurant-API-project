@@ -1,4 +1,4 @@
-from fastapi import Depends, BackgroundTasks
+from fastapi import BackgroundTasks, Depends
 
 from .. import models, schemas
 from ..repositories import MenuCacheRepository, MenuRepository, NotificationRepository

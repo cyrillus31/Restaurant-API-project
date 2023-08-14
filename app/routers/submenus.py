@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 
 from .. import schemas
 from ..services import SubmenuService
@@ -21,7 +21,7 @@ async def create_submenu(background_tasks: BackgroundTasks, menu_id: str, submen
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
 async def delete_submenu(background_tasks: BackgroundTasks, menu_id: str, id: str, submenu: SubmenuService = Depends()):
-    return await submenu.delete( 
+    return await submenu.delete(
         background_tasks=background_tasks,
         url_key=f'menus/{menu_id}/submenus/{id}/',
         id=id,

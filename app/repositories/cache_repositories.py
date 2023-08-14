@@ -1,7 +1,7 @@
 import json
 
-import redis
-from redis import asyncio as aioredis  # type: ignore
+import redis  # type: ignore
+from redis import asyncio as aioredis
 
 from .. import models
 from ..config import settings
@@ -14,25 +14,27 @@ CACHE_EXPIRE_TIME = 60  # seconds
 
 class TreeCacheRepository:
     """FOR ADDING ALL MENUS, SUBMENUS AND DISHES"""
-    async def get_tree(url_key: str) -> dict:
+    @staticmethod
+    async def get_tree(url_key: str) -> dict | None:
         key = url_key
         cached_response = await cache.get(key)
         if cached_response:
             return json.loads(cached_response)
         return None
 
+    @staticmethod
     async def add_tree(url_key: str, dict_to_store: dict) -> None:
         key = url_key
         print('cached list created')
         await cache.set(key, json.dumps(dict_to_store), ex=CACHE_EXPIRE_TIME)
 
+    @staticmethod
     async def drop_tree(url_key: str = 'getall/') -> None:
         try:
             await cache.delete(url_key)
 
         except redis.exceptions.ResponseError as e:
             print(e)
-            
 
 
 class MenuCacheRepository:
@@ -87,7 +89,7 @@ class MenuCacheRepository:
     async def invalidate_update_cache(self, id: str):
         """This methods deletes cached list the updated http resource belongs to"""
 
-        TreeCacheRepository.drop_tree()
+        await TreeCacheRepository.drop_tree()
         # in case someone tries to update empty cache entires
         try:
             await cache.delete(*await cache.keys(f'*{self.objects}/'))
@@ -100,7 +102,7 @@ class MenuCacheRepository:
 
     async def invalidate_all_related_cache(self, url_key: str):
 
-        TreeCacheRepository.drop_tree()
+        await TreeCacheRepository.drop_tree()
 
         try:
             split_url = url_key.split('/')
