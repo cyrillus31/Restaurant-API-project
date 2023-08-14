@@ -11,7 +11,7 @@ df = pd.read_excel(absolute_path, header=None)
 arr = df.to_numpy()
 
 
-def parser(target: str = None):
+def parser(target: str | None = None):
     menus = []
     submenus = []
     dishes = []

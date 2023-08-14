@@ -1,35 +1,20 @@
-from .xlsx_parser import parser
-from app.database import async_session, engine, get_session
-from app import models
 import asyncio
 import os
 import sys
 
-from asyncpg.exceptions import UniqueViolationError
-from sqlalchemy import delete, select, update
-from sqlalchemy_utils import create_database, database_exists
+from sqlalchemy import update
+
+from app import models
+from app.database import async_session
 
 from .celery import celery_app
+from .xlsx_parser import parser
 
 path = os.getcwd()
 sys.path.append(path)
 
 
-# create a database if not exists
-# if not database_exists(engine.url.replace('+asyncpg', '')):
-# create_database(engine.url.replace('+asyncpg', ''))
-
-
 menus, submenus, dishes = parser()
-
-
-@celery_app.task(name='hello')
-def hello_world():
-    i = random.randint(100, 300)
-    print('Hello World!')
-
-    with open(f'zzzdelete_this{i}.txt', 'w') as fire:
-        fire.write('Nonething')
 
 
 async def add_to_db(objects, session, orm_model):

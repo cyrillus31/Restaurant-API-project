@@ -24,8 +24,8 @@ services:
   celery:
       # image: python:3.10-slim
       build: .
-      # volumes:
-      # - .:/celery_tasks
+      volumes:
+      - .:/restaurant_api
       environment:
         TZ: "Europe/Moscow"
         # CELERY_BROKER_URL: "amqp://admin:admin@rabbit"
