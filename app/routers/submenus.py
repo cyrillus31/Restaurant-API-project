@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 
 from .. import schemas
 from ..services import SubmenuService
@@ -10,17 +10,19 @@ router = APIRouter(
 @router.post(
     '/', status_code=status.HTTP_201_CREATED, response_model=schemas.SubmenuOut
 )
-def create_submenu(menu_id: str, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends()):
-    return submenu.create(
+async def create_submenu(background_tasks: BackgroundTasks, menu_id: str, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends(),):
+    return await submenu.create(
         url_key=f'menus/{menu_id}/submenus/',
         menu_data=submenu_data,
+        background_tasks=background_tasks,
         menu_id=menu_id
     )
 
 
 @router.delete('/{id}', status_code=status.HTTP_200_OK)
-def delete_submenu(menu_id: str, id: str, submenu: SubmenuService = Depends()):
-    return submenu.delete(
+async def delete_submenu(background_tasks: BackgroundTasks, menu_id: str, id: str, submenu: SubmenuService = Depends()):
+    return await submenu.delete(
+        background_tasks=background_tasks,
         url_key=f'menus/{menu_id}/submenus/{id}/',
         id=id,
         menu_id=menu_id
@@ -32,8 +34,8 @@ def delete_submenu(menu_id: str, id: str, submenu: SubmenuService = Depends()):
     status_code=status.HTTP_200_OK,
     response_model=list[schemas.SubmenuOut],
 )
-def read_submenus(menu_id: str, skip: int = 0, limit: int = 100, submenu: SubmenuService = Depends(),):
-    return submenu.get_all(
+async def read_submenus(menu_id: str, skip: int = 0, limit: int = 100, submenu: SubmenuService = Depends(),):
+    return await submenu.get_all(
         url_key=f'menus/{menu_id}/submenus/',
         menu_id=menu_id,
         skip=skip,
@@ -42,8 +44,8 @@ def read_submenus(menu_id: str, skip: int = 0, limit: int = 100, submenu: Submen
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut)
-def get_submenu(id: str, menu_id: str, submenu: SubmenuService = Depends()):
-    return submenu.get(
+async def get_submenu(id: str, menu_id: str, submenu: SubmenuService = Depends()):
+    return await submenu.get(
         url_key=f'menus/{menu_id}/submenus/{id}/',
         id=id,
         menu_id=menu_id
@@ -53,6 +55,6 @@ def get_submenu(id: str, menu_id: str, submenu: SubmenuService = Depends()):
 @router.patch(
     '/{id}', status_code=status.HTTP_200_OK, response_model=schemas.SubmenuOut
 )
-def update_submenu(
-        menu_id: str, id: str, submenu_data: schemas.MenuCreate, submenu: SubmenuService = Depends()):
-    return submenu.update(submenu_data, id, menu_id=menu_id)
+async def update_submenu(
+        background_tasks: BackgroundTasks, menu_id: str, id: str, submenu_data: schemas.MenuCreate, submenu: SubmenuService = Depends()):
+    return await submenu.update(background_tasks=background_tasks, menu_data=submenu_data, id=id, menu_id=menu_id)

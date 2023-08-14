@@ -6,3 +6,7 @@
 **/.pytest_cache
 **/.mypy_cache
 # **/.env
+**/*ipynb*
+**/*.bak
+**/*.dat
+**/*.dir

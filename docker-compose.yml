@@ -21,3 +21,22 @@ services:
         - '6379:6379'
       depends_on:
         - db
+  celery:
+      # image: python:3.10-slim
+      build: .
+      volumes:
+      - .:/restaurant_api
+      environment:
+        TZ: "Europe/Moscow"
+        # CELERY_BROKER_URL: "amqp://admin:admin@rabbit"
+      command: celery -A app.tasks.tasks worker -B --loglevel=DEBUG
+      depends_on:
+      - rabbit
+  rabbit:
+        image: rabbitmq
+        # volumes:
+        # - .:/celery_tasks
+        ports:
+        - "5672:5672"
+        environment:
+          TZ: Europe/Moscow
