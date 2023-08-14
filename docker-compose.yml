@@ -31,7 +31,7 @@ services:
         # CELERY_BROKER_URL: "amqp://admin:admin@rabbit"
       command: celery -A app.tasks.tasks worker -B --loglevel=DEBUG
       depends_on:
-      - rabbit 
+      - rabbit
   rabbit:
         image: rabbitmq
         # volumes:
