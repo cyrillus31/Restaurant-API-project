@@ -12,13 +12,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app import models
 
 from .celery import celery_app
-from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file
+from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file, create_temp_if_doesnt_exist
 from ..config import settings
 from ..services import MenuService, SubmenuService, DishService
 
 
 PREFIX = "api/v1/"
-URL = f"http://127.0.0.1:8000/{PREFIX}"
+URL = f"http://api:8000/{PREFIX}"
 
 SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
@@ -122,8 +122,10 @@ async def post_request(url_key, set_id, payload):
 
 
 
-@celery_app.task(name='update_db')
+
+
 async def sync_db():
+
     prev = parser(from_previous_state=True)
     curr = parser()
     for type in ["menus", "submenus", "dishes"]:
@@ -144,7 +146,12 @@ async def sync_db():
             await post_request(url_key, set_id, to_create[url_key])
             print(f"{url_key} was created!")
 
+    update_previous_state_file()
 
+
+@celery_app.task(name='update_db')
+def update_tables_task():
+    return asyncio.run(sync_db())
         
     
 

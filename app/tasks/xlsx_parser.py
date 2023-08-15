@@ -3,23 +3,28 @@ import shutil
 
 import pandas as pd
 
-file_path = 'admin/Menu.xlsx'
+file_path = os.path.join('admin', 'Menu.xlsx')
 cwd = os.getcwd()
 absolute_path = os.path.join(cwd, file_path)
+absolute_path_to_temp = os.path.join(cwd, "admin/.previous_state_menu.xlsx")
 
+# def create_temp_if_doesnt_exist():
+    # if not os.path.exists(absolute_path_to_temp):
+        # os.mknod(absolute_path_to_temp)
 
 def update_previous_state_file():
-    shutil.copyfile(absolute_path, absolute_path+".tmp")
+    shutil.copyfile(absolute_path, absolute_path_to_temp)
 
 
 # def convert_to_dict(objects: list) -> dict:
     # return {object["id"]: object for object in objects}
 
-def parser(from_previous_state: bool = False, absolute_path=absolute_path) -> dict:
+def parser(from_previous_state: bool = False, path_to_xlsx=absolute_path) -> dict:
     if from_previous_state:
-        absolute_path += '.tmp'
+        path_to_xlsx=absolute_path_to_temp
+        
 
-    df = pd.read_excel(absolute_path, header=None)
+    df = pd.read_excel(path_to_xlsx, header=None)
     arr = df.to_numpy()
 
     menus = {}
@@ -82,7 +87,5 @@ def get_objects_to_update_create_and_to_delete(prev_objects: dict, curr_objects:
 
 
 if __name__ == '__main__':
-    menus, submenus, dishes = parser()
-    print(menus, '\n')
-    print(submenus, '\n')
-    print(dishes, '\n')
+    print(absolute_path)
+    print(parser(from_previous_state=False))
