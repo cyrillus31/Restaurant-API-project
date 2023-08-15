@@ -37,37 +37,12 @@ async def create_object(object, session, orm_model):
     session.add(new_object)
     await session.commit()
 
-# async def update_object(object, session, orm_model, background_tasks: BackgroundTasks):
-
-    # update_query = update(orm_model).where(orm_model.id == object['id']).values(object)
-    # await session.execute(update_query)
-    # await session.commit()
-
-
-# async def check_object(object, session, orm_model):
-    # object_exists = await find_object(object, session, orm_model)
-    # if object_exists:
-    # pass
-    # # await update_object(object, session, orm_model)
-    # else:
-    # await create_object(object, session, orm_model)
 
 async def check_object(object, session, orm_model):
     object_exists = await find_object(object, session, orm_model)
     if not object_exists:
         await create_object(object, session, orm_model)
 
-
-# async def add_to_db(objects, session, orm_model):
-    # for object in objects:
-        # new_object = orm_model(**object)
-        # session.add(new_object)
-        # await session.commit()
-
-
-# async def update_menu_in_db(objects, session, orm_model):
-    # for object in objects:
-        # await check_object(object, session, orm_model)
 
 async def add_to_db(objects, session, orm_model):
     for object in objects:
@@ -87,19 +62,6 @@ async def create_tables_from_excel():
         await add_to_db(submenus, session, models.Submenu)
         await add_to_db(dishes, session, models.Dish)
 
-
-# async def update_tables():
-    # menus, submenus, dishes = parser()
-    # print(menus[0])
-    # async with async_session() as session:
-        # await update_to_db(menus, session, models.Menu)
-        # await update_to_db(submenus, session, models.Submenu)
-        # await update_to_db(dishes, session, models.Dish)
-
-
-# @celery_app.task(name='update_db')
-# def update_tables_task():
-    # return asyncio.run(create_tables())
 
 async def put_request(url_key, payload):
     print('creating put connection')
@@ -125,8 +87,6 @@ async def post_request(url_key, set_id, payload):
     async with aiohttp.ClientSession() as session:
         async with session.post(_url, json=payload) as response:
             print(response)
-        # print('sending post')
-        # task = asyncio.create_task(session.post(_url))
 
 
 async def sync_db():

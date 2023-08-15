@@ -21,9 +21,6 @@ def update_previous_state_file():
     shutil.copyfile(absolute_path, absolute_path_to_temp)
 
 
-# def convert_to_dict(objects: list) -> dict:
-    # return {object["id"]: object for object in objects}
-
 def parser(from_previous_state: bool = False, path_to_xlsx=absolute_path) -> dict:
     if from_previous_state:
         path_to_xlsx = absolute_path_to_temp
