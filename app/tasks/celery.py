@@ -11,8 +11,8 @@ celery_app.conf.beat_schedule = {
         'schedule': 15,
     },
     # 'create_db': {
-        # 'task': 'create_db',
-        # 'schedule': 14,
+    # 'task': 'create_db',
+    # 'schedule': 14,
     # },
 }
 
