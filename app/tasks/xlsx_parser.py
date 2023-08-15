@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import pandas as pd
 
@@ -6,12 +7,22 @@ file_path = 'admin/Menu.xlsx'
 cwd = os.getcwd()
 absolute_path = os.path.join(cwd, file_path)
 
-df = pd.read_excel(absolute_path, header=None)
 
-arr = df.to_numpy()
+def update_previous_state_file():
+    shutil.copyfile(absolute_path, absolute_path+".tmp")
 
 
-def parser(target: str | None = None):
+def convert_to_dict(objects: list) -> dict:
+    return {object["id"]: object for object in objects}
+
+def parser(target: str | None = None, from_previous_state: bool = False):
+    if from_previous_state:
+        absolute_path += '.tmp'
+
+
+    df = pd.read_excel(absolute_path, header=None)
+    arr = df.to_numpy()
+
     menus = []
     submenus = []
     dishes = []
@@ -28,14 +39,30 @@ def parser(target: str | None = None):
             dish = {'id': str(row[2]), 'title': row[3], 'description': row[4],
                     'price': str(row[5]), 'submenu_id': submenu_id}
             dishes.append(dish)
+
+    menus = convert_to_dict(menus)
+    submenus = convert_to_dict(submenus)
+    dishes = convert_to_dict(dishes)
+
     if target == 'menus':
         return menus
     elif target == 'submenus':
         return submenus
     elif target == 'dishes':
-
         return dishes
+
     return menus, submenus, dishes
+
+
+pmenus, psubmenus, pdishes = parser(from_previous_state=True)
+menus, submenus, dishes = parser()
+
+def get_objects_to_update_and_to_delete(prev_objects: dict, curr_objects: dict) -> list:
+    if prev_objects == curr_objects:
+        return []
+            
+
+
 
 
 if __name__ == '__main__':

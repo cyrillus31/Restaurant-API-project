@@ -10,10 +10,10 @@ celery_app.conf.beat_schedule = {
         'task': 'update_db',
         'schedule': 15,
     },
-    'create_db': {
-        'task': 'create_db',
-        'schedule': 15,
-    },
+    # 'create_db': {
+        # 'task': 'create_db',
+        # 'schedule': 14,
+    # },
 }
 
 celery_app.conf.broker_connection_retry_on_startup = True

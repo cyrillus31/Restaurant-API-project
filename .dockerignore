@@ -1,3 +1,4 @@
+# Junk
 **/__*__
 **/venv
 **/.vscode
@@ -8,3 +9,14 @@
 **/*.bak
 **/*.dat
 **/*.dir
+
+# Admin's folder
+**/admin/
+
+# Docker related
+**/*docker*
+**/*Docker*
+
+# Version control related
+**/*git*
+**/*pre-commit-config*

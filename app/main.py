@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from .database import engine, init_db
 from .routers import dishes, getall, menus, submenus
+from app.tasks.tasks import create_tables_from_excel
 
 # create tables
 # Base.metadata.create_all(engine)
@@ -24,6 +25,7 @@ app.include_router(getall.router)
 @app.on_event('startup')
 async def on_startup():
     await init_db(engine)
+    await create_tables_from_excel()
 
 
 @app.get('/api/v1/')
