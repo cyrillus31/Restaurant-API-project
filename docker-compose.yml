@@ -2,8 +2,8 @@ version: '3'
 services:
   api:
     build: .
-    # volumes:
-      # - app_volume:/restaurant_api/app
+    volumes:
+      - app_volume:/restaurant_api/app
     depends_on:
       - db
     ports:
@@ -27,10 +27,10 @@ services:
     # image: python:3.10-slim
     build: .
     volumes:
-      # - app_volume:/restaurant_api/app
+      - app_volume:/restaurant_api/app
       - type: bind
-        source: ./admin
-        target: /restaurant_api/admin
+        source: ./admin/Menu.xlsx
+        target: /restaurant_api/admin/Menu.xlsx
     environment:
       TZ: "Europe/Moscow"
       # CELERY_BROKER_URL: "amqp://admin:admin@rabbit"
@@ -48,3 +48,4 @@ services:
       TZ: Europe/Moscow
 volumes:
   admin_excel:
+  app_volume:

@@ -2,14 +2,17 @@ import os
 import shutil
 
 import pandas as pd
+import openpyxl
 
 file_path = os.path.join('admin', 'Menu.xlsx')
 cwd = os.getcwd()
 absolute_path = os.path.join(cwd, file_path)
 absolute_path_to_temp = os.path.join(cwd, "admin/.previous_state_menu.xlsx")
 
-# def create_temp_if_doesnt_exist():
-    # if not os.path.exists(absolute_path_to_temp):
+def create_temp_if_doesnt_exist():
+    if not os.path.exists(absolute_path_to_temp):
+        wb = openpyxl.Workbook()
+        wb.save(absolute_path_to_temp)
         # os.mknod(absolute_path_to_temp)
 
 def update_previous_state_file():
@@ -87,5 +90,6 @@ def get_objects_to_update_create_and_to_delete(prev_objects: dict, curr_objects:
 
 
 if __name__ == '__main__':
+    create_temp_if_doesnt_exist()
     print(absolute_path)
     print(parser(from_previous_state=False))

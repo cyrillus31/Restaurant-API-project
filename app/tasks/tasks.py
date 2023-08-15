@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app import models
 
 from .celery import celery_app
-from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file 
+from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file, create_temp_if_doesnt_exist 
 from ..config import settings
 from ..services import MenuService, SubmenuService, DishService
 
@@ -107,20 +107,24 @@ async def create_tables_from_excel():
 async def put_request(url_key, payload):
     print('creating put connection')
     _url = URL + url_key
+    print(_url)
     async with aiohttp.ClientSession() as session:
-        print('sending put')
-        task = asyncio.create_task(session.patch(_url, json=payload))
+        async with session.patch(_url, json=payload) as response:
+            print(response)
+
 
 async def delete_request(url_key, payload):
     _url = URL + url_key
+    print(_url)
     async with aiohttp.ClientSession() as session:
-        print('sending delete')
-        task = asyncio.create_task(session.delete(_url))
+        async with session.delete(_url)as response:
+            print(response)
 
 
 async def post_request(url_key, set_id, payload):
     url_key = "/".join(url_key.split("/")[:-1])
     _url = URL + url_key + f"/?id={set_id}"
+    print(_url)
     async with aiohttp.ClientSession() as session:
         async with session.post(_url, json=payload) as response:
             print(response)
@@ -132,7 +136,7 @@ async def post_request(url_key, set_id, payload):
 
 
 async def sync_db():
-
+    create_temp_if_doesnt_exist()
     prev = parser(from_previous_state=True)
     curr = parser()
     print('works1')
@@ -146,18 +150,18 @@ async def sync_db():
         to_create: dict = d["create"]
         print(d)
         print(to_create, to_delete, to_update)
-        #for url_key in to_update:
-            #await put_request(url_key, to_update[url_key])
-            #print(f"{url_key} was updated!")
-        #for url_key in to_delete:
-            #await delete_request(url_key, to_update[url_key])
-            #print(f"{url_key} was deleted!")
+        for url_key in to_update:
+            await put_request(url_key, to_update[url_key])
+            print(f"{url_key} was updated!")
+        for url_key in to_delete:
+            await delete_request(url_key, to_delete[url_key])
+            print(f"{url_key} was deleted!")
         for url_key in to_create:
             set_id = to_create[url_key]["id"]
             await post_request(url_key, set_id, to_create[url_key])
             print(f"{url_key} was created!")
 
-    # update_previous_state_file()
+    update_previous_state_file()
 
 
 @celery_app.task(name='update_db')
