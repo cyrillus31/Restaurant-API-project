@@ -14,7 +14,6 @@ def create_temp_if_doesnt_exist():
     if not os.path.exists(absolute_path_to_temp):
         wb = openpyxl.Workbook()
         wb.save(absolute_path_to_temp)
-        # os.mknod(absolute_path_to_temp)
 
 
 def update_previous_state_file():
