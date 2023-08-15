@@ -34,7 +34,7 @@ services:
     environment:
       TZ: "Europe/Moscow"
       # CELERY_BROKER_URL: "amqp://admin:admin@rabbit"
-    command: bash -c "pip install celery && celery -A app.tasks.tasks worker -B --loglevel=debug"
+    command: bash -c "celery -A app.tasks.tasks worker -B --loglevel=debug"
     depends_on:
     - rabbit
     - api

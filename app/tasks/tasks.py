@@ -18,7 +18,7 @@ from ..services import MenuService, SubmenuService, DishService
 
 
 PREFIX = "api/v1/"
-URL = f"http://localhost:8000/{PREFIX}"
+URL = f"http://api:8000/{PREFIX}"
 
 SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
@@ -105,20 +105,27 @@ async def create_tables_from_excel():
     # return asyncio.run(create_tables())
 
 async def put_request(url_key, payload):
+    print('creating put connection')
     _url = URL + url_key
     async with aiohttp.ClientSession() as session:
-        task = asyncio.create_task(session.patch(_url, data=payload))
+        print('sending put')
+        task = asyncio.create_task(session.patch(_url, json=payload))
 
 async def delete_request(url_key, payload):
     _url = URL + url_key
     async with aiohttp.ClientSession() as session:
+        print('sending delete')
         task = asyncio.create_task(session.delete(_url))
 
 
 async def post_request(url_key, set_id, payload):
-    _url = URL + url_key + f"?id={set_id}"
+    url_key = "/".join(url_key.split("/")[:-1])
+    _url = URL + url_key + f"/?id={set_id}"
     async with aiohttp.ClientSession() as session:
-        task = asyncio.create_task(session.post(_url))
+        async with session.post(_url, json=payload) as response:
+            print(response)
+        # print('sending post')
+        # task = asyncio.create_task(session.post(_url))
 
 
 
@@ -128,31 +135,35 @@ async def sync_db():
 
     prev = parser(from_previous_state=True)
     curr = parser()
+    print('works1')
     for type in ["menus", "submenus", "dishes"]:
+        print('works2222')
         prev_objects = prev[type]
         curr_objects = curr[type]
         d = get_objects_to_update_create_and_to_delete(prev_objects, curr_objects)
         to_update: dict = d["update"]
         to_delete: dict = d["delete"]
         to_create: dict = d["create"]
-        for url_key in to_update:
-            await put_request(url_key, to_update[url_key])
-            print(f"{url_key} was updated!")
-        for url_key in to_delete:
-            await delete_request(url_key, to_update[url_key])
-            print(f"{url_key} was deleted!")
+        print(d)
+        print(to_create, to_delete, to_update)
+        #for url_key in to_update:
+            #await put_request(url_key, to_update[url_key])
+            #print(f"{url_key} was updated!")
+        #for url_key in to_delete:
+            #await delete_request(url_key, to_update[url_key])
+            #print(f"{url_key} was deleted!")
         for url_key in to_create:
             set_id = to_create[url_key]["id"]
             await post_request(url_key, set_id, to_create[url_key])
             print(f"{url_key} was created!")
 
-    update_previous_state_file()
+    # update_previous_state_file()
 
 
 @celery_app.task(name='update_db')
 def update_tables_task():
-    print("TASK STARTS!!"*10)
     return asyncio.run(sync_db())
         
+
     
 
