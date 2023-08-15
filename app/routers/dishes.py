@@ -14,7 +14,8 @@ async def create_dish(background_tasks: BackgroundTasks, menu_id: str, submenu_i
         url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/',
         menu_data=dish_data,
         background_tasks=background_tasks,
-        submenu_id=submenu_id
+        submenu_id=submenu_id,
+        id=id
     )
 
 

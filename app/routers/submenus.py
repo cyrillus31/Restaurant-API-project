@@ -15,7 +15,8 @@ async def create_submenu(background_tasks: BackgroundTasks, menu_id: str, submen
         url_key=f'menus/{menu_id}/submenus/',
         menu_data=submenu_data,
         background_tasks=background_tasks,
-        menu_id=menu_id
+        menu_id=menu_id,
+        id=id
     )
 
 

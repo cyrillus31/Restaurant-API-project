@@ -12,13 +12,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app import models
 
 from .celery import celery_app
-from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file, create_temp_if_doesnt_exist
+from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file 
 from ..config import settings
 from ..services import MenuService, SubmenuService, DishService
 
 
 PREFIX = "api/v1/"
-URL = f"http://api:8000/{PREFIX}"
+URL = f"http://localhost:8000/{PREFIX}"
 
 SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
@@ -116,7 +116,7 @@ async def delete_request(url_key, payload):
 
 
 async def post_request(url_key, set_id, payload):
-    _url = URL + url_key + f"?set_id={set_id}"
+    _url = URL + url_key + f"?id={set_id}"
     async with aiohttp.ClientSession() as session:
         task = asyncio.create_task(session.post(_url))
 
@@ -131,10 +131,10 @@ async def sync_db():
     for type in ["menus", "submenus", "dishes"]:
         prev_objects = prev[type]
         curr_objects = curr[type]
-        d = await get_objects_to_update_create_and_to_delete(prev_objects, curr_objects)
-        to_update: list[dict] = d["update"]
-        to_delete: list[dict] = d["delete"]
-        to_create: list[dict] = d["create"]
+        d = get_objects_to_update_create_and_to_delete(prev_objects, curr_objects)
+        to_update: dict = d["update"]
+        to_delete: dict = d["delete"]
+        to_create: dict = d["create"]
         for url_key in to_update:
             await put_request(url_key, to_update[url_key])
             print(f"{url_key} was updated!")
@@ -151,6 +151,7 @@ async def sync_db():
 
 @celery_app.task(name='update_db')
 def update_tables_task():
+    print("TASK STARTS!!"*10)
     return asyncio.run(sync_db())
         
     
