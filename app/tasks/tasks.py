@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+import aiohttp
 
 import requests
 from fastapi import BackgroundTasks
@@ -11,10 +12,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app import models
 
 from .celery import celery_app
-from .xlsx_parser import parser
+from .xlsx_parser import parser, get_objects_to_update_and_to_delete, update_previous_state_file
 from ..config import settings
 from ..services import MenuService, SubmenuService, DishService
 
+
+PREFIX = "api/v1/"
+URL = f"http://127.0.0.1:8000/{PREFIX}"
 
 SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
@@ -34,7 +38,8 @@ async def create_object(object, session, orm_model):
     session.add(new_object)
     await session.commit()
 
-async def update_object(object, session, orm_model, background_tasks: BackgroundTasks):
+# async def update_object(object, session, orm_model, background_tasks: BackgroundTasks):
+
     # update_query = update(orm_model).where(orm_model.id == object['id']).values(object)
     # await session.execute(update_query)
     # await session.commit()
@@ -71,6 +76,13 @@ async def add_to_db(objects, session, orm_model):
 
 
 async def create_tables_from_excel():
+    parse_results = parser()
+    menus = parse_results["menus"]
+    submenus = parse_results["submenus"]
+    dishes = parse_results["dishes"]
+    menus = [menus[key] for key in menus]
+    submenus = [submenus[key] for key in submenus]
+    dishes = [dishes[key] for key in dishes]
     async with async_session() as session:
         await add_to_db(menus, session, models.Menu)
         await add_to_db(submenus, session, models.Submenu)
@@ -88,11 +100,33 @@ async def create_tables_from_excel():
 
 
 
-@celery_app.task(name='update_db')
-def update_tables_task():
-    return asyncio.run(create_tables())
+# @celery_app.task(name='update_db')
+# def update_tables_task():
+    # return asyncio.run(create_tables())
+
+async def put_request(url_key, payload):
+    _url = URL + url_key
+    async with aiohttp.ClientSession() as session:
+        task = asyncio.create_task(session.patch(_url, data=payload))
+
+
+
+
 
 @celery_app.task(name='update_db')
-def sync_db():
-    menus, submenus, dishes = parser()
+async def sync_db():
+    prev = parser(from_previous_state=True)
+    curr = parser()
+    for type in ["menus", "submenus", "dishes"]:
+        prev_objects = prev[type]
+        curr_objects = curr[type]
+        d = await get_objects_to_update_and_to_delete(prev_objects, curr_objects)
+        to_update: list[dict] = d["update"]
+        for url_key in to_update:
+            await put_request(url_key, to_update[url_key])
+            print(f"{url_key} was updated!")
+
+
+        
+    
 
