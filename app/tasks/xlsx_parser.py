@@ -62,8 +62,8 @@ def parser(from_previous_state: bool = False, absolute_path=absolute_path) -> di
 
 
 
-def get_objects_to_update_and_to_delete(prev_objects: dict, curr_objects: dict) -> dict:
-    result = {"update" : [], "delete": []}
+def get_objects_to_update_create_and_to_delete(prev_objects: dict, curr_objects: dict) -> dict:
+    result = {"update" : [], "delete": [], 'create': []}
     if prev_objects == curr_objects:
         return result
     for key in prev_objects:
@@ -73,6 +73,9 @@ def get_objects_to_update_and_to_delete(prev_objects: dict, curr_objects: dict) 
 
         if prev_objects[key] != curr_objects[key]:
             result["update"].append({key: curr_objects[key]})
+    for key in curr_objects:
+        if key not in prev_objects:
+            result["create"].append(curr_objects[key])
     return result
             
 

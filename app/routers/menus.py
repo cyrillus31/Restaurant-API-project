@@ -7,11 +7,12 @@ router = APIRouter(prefix='/api/v1/menus', tags=['Menus'])
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOut)
-async def create_menu(background_tasks: BackgroundTasks, menu_data: schemas.MenuCreate, menu: MenuService = Depends(), ):
+async def create_menu(background_tasks: BackgroundTasks, menu_data: schemas.MenuCreate, menu: MenuService = Depends(), id: str | None = None):
     return await menu.create(
         url_key='menus/',
         menu_data=menu_data,
         background_tasks=background_tasks,
+        id=id
     )
 
 

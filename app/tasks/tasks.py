@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app import models
 
 from .celery import celery_app
-from .xlsx_parser import parser, get_objects_to_update_and_to_delete, update_previous_state_file
+from .xlsx_parser import parser, get_objects_to_update_create_and_to_delete, update_previous_state_file
 from ..config import settings
 from ..services import MenuService, SubmenuService, DishService
 
@@ -109,7 +109,16 @@ async def put_request(url_key, payload):
     async with aiohttp.ClientSession() as session:
         task = asyncio.create_task(session.patch(_url, data=payload))
 
+async def delete_request(url_key, payload):
+    _url = URL + url_key
+    async with aiohttp.ClientSession() as session:
+        task = asyncio.create_task(session.delete(_url))
 
+
+async def post_request(url_key, set_id, payload):
+    _url = URL + url_key + f"?set_id={set_id}"
+    async with aiohttp.ClientSession() as session:
+        task = asyncio.create_task(session.post(_url))
 
 
 
@@ -120,11 +129,20 @@ async def sync_db():
     for type in ["menus", "submenus", "dishes"]:
         prev_objects = prev[type]
         curr_objects = curr[type]
-        d = await get_objects_to_update_and_to_delete(prev_objects, curr_objects)
+        d = await get_objects_to_update_create_and_to_delete(prev_objects, curr_objects)
         to_update: list[dict] = d["update"]
+        to_delete: list[dict] = d["delete"]
+        to_create: list[dict] = d["create"]
         for url_key in to_update:
             await put_request(url_key, to_update[url_key])
             print(f"{url_key} was updated!")
+        for url_key in to_delete:
+            await delete_request(url_key, to_update[url_key])
+            print(f"{url_key} was deleted!")
+        for url_key in to_create:
+            set_id = to_create[url_key]["id"]
+            await post_request(url_key, set_id, to_create[url_key])
+            print(f"{url_key} was created!")
 
 
         

@@ -10,7 +10,7 @@ router = APIRouter(
 @router.post(
     '/', status_code=status.HTTP_201_CREATED, response_model=schemas.SubmenuOut
 )
-async def create_submenu(background_tasks: BackgroundTasks, menu_id: str, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends(),):
+async def create_submenu(background_tasks: BackgroundTasks, menu_id: str, submenu_data: schemas.SubmenuCreate, submenu: SubmenuService = Depends(), id: str | None = None):
     return await submenu.create(
         url_key=f'menus/{menu_id}/submenus/',
         menu_data=submenu_data,
