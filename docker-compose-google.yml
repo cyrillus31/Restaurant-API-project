@@ -25,14 +25,9 @@ services:
       - db
   celery:
     build: .
-    volumes:
-      - app_volume:/restaurant_api/app
-      - type: bind
-        source: ./admin/Menu.xlsx
-        target: /restaurant_api/admin/Menu.xlsx
     environment:
       TZ: "Europe/Moscow"
-    command: bash -c "celery -A app.tasks.tasks worker -B --loglevel=info"
+    command: bash -c "celery -A app.google_sheet_tasks.tasks worker -B --loglevel=info"
     depends_on:
     - rabbit
     - api
