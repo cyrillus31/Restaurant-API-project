@@ -223,3 +223,8 @@ Restaurant
 
 ## Результаты тестирования Postman
 <img src="docs/postman_test_results.png" alt="postman test results 100%">
+
+
+
+<!--- quickly update both repositories in one command ---!>
+<!--- git add .; git commit -m 'Update README.md'; git push origin main; git checkout homework-4; git pull origin main; git push origin homework-4; git checkout main; ---!>
