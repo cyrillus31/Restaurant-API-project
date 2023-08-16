@@ -1,0 +1,49 @@
+version: '3'
+services:
+  api:
+    build: .
+    volumes:
+      - app_volume:/restaurant_api/app
+    depends_on:
+      - db
+    ports:
+      - '8000:8000'
+
+  db:
+    image: postgres:15.1-alpine
+    environment:
+      TZ: 'Europe/Moscow'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'data'
+    expose:
+      - '5432'
+  cache:
+    image: redis/redis-stack:latest
+    ports:
+      - '6379:6379'
+    depends_on:
+      - db
+  celery:
+    build: .
+    volumes:
+      - app_volume:/restaurant_api/app
+      - type: bind
+        source: ./admin/Menu.xlsx
+        target: /restaurant_api/admin/Menu.xlsx
+    environment:
+      TZ: "Europe/Moscow"
+    command: bash -c "celery -A app.tasks.tasks worker -B --loglevel=info"
+    depends_on:
+    - rabbit
+    - api
+    - db
+    - cache
+  rabbit:
+    image: rabbitmq
+    ports:
+    - "5672:5672"
+    environment:
+      TZ: Europe/Moscow
+volumes:
+  admin_excel:
+  app_volume:
