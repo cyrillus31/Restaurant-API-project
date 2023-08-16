@@ -9,12 +9,13 @@ router = APIRouter(
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.DishOut)
-async def create_dish(background_tasks: BackgroundTasks, menu_id: str, submenu_id: str, dish_data: schemas.DishCreate, dish: DishService = Depends()):
+async def create_dish(background_tasks: BackgroundTasks, menu_id: str, submenu_id: str, dish_data: schemas.DishCreate, dish: DishService = Depends(), id: str | None = None):
     return await dish.create(
         url_key=f'menus/{menu_id}/submenus/{submenu_id}/dishes/',
         menu_data=dish_data,
         background_tasks=background_tasks,
-        submenu_id=submenu_id
+        submenu_id=submenu_id,
+        id=id
     )
 
 

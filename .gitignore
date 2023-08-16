@@ -2,11 +2,12 @@
 **/venv
 **/.vscode
 **/.idea
-**/*.sh
 **/.pytest_cache
 **/.mypy_cache
 # **/.env
+**/*.sh
 **/*ipynb*
 **/*.bak
 **/*.dat
 **/*.dir
+**/~$*
