@@ -20,7 +20,7 @@
   <img width="12" />
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="40" alt="git logo"  />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" height="40" alt="github logo"  />
+  <img src="https://skillicons.dev/icons?i=github" height="40" alt="github logo"  />
 </div>
 
 ## Разделы
@@ -61,7 +61,9 @@ CRUD REST API ресторана, содержащий слеудующие су
 ## Excel файл администратора
 Для удобства использования приложения разработана система односторонней синхронизации Excel файла [Menu.xlsx](admin/Menu.xlsx) в папке /admin с базой данных путем обращения к API каждые 15 секунд в рамках фоновой задачи Celery.
 **Файл [Menu.xlsx](admin/Menu.xlsx) доступен контейнеру напрямую через [Bind mount](https://docs.docker.com/storage/bind-mounts/) и поэтмоу также доступен администратору для редактироваиня через операционную систему пользовательского компьютера.**
-<img src='https://docs.docker.com/storage/images/types-of-mounts-bind.png'><br><br>
+<div align='center'>
+<img src='https://docs.docker.com/storage/images/types-of-mounts-bind.png'>
+</div>
 Изменения, которые необходимо отразить в БД, учитываются относительно файла `.previous_state_menu.xlsx`, который хранится непосредственнов в Volume контейнера Celery и не виден пользователю из ОС. После внесения изменений в БД в этот файл сохраняется состояние Excel файла, после чего он используется для сравнения с оригинальным файлом, а все изменения будут внесены с помощью асинхронных зазпросов к API с помощью библиотеки [aiohttp](https://docs.aiohttp.org/en/stable/client_quickstart.html). Парсинг Excel файла осуществляется с помощью библиотеки [Pandas](https://pandas.pydata.org/). **Резонное ограничение на уникальность (ID) ключей экземпляров сущностей в базе данных требует, чтобы ID в Excel таблице тоже были уникальными в рамках одной сущности (!)**. Для первоначального заполнения таблицы и последующего добавления элементов был доработан существующий POST эндпоинт: добавленна поддержка [Query String](https://en.wikipedia.org/wiki/Query_string) с опциональным параметрмо **id** (например `POST http://127.0.0.1:8000/menus/?id=123`), что позволяет пользовтелю Excel таблицы задаваться собственными ID. В случае, если параметр не будет передан в URL, то в качестве первичного ключа будет сгенерирован UUID.
 
 
