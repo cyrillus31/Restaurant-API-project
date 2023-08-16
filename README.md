@@ -139,7 +139,9 @@ docker-compose -f docker-compose-tests.yml up
 
 
 ## Паттерны
-<img src="docs/RepositoryPattern.png" alt="postman test results 100%" alt="Centered Image" align="middle">
+<div align='center'>
+<img src="docs/RepositoryPattern.png" alt="postman test results 100%" alt="Centered Image" height='400'>
+</div>
 
 В проекте реализованы паттерны Репозиторий и Сервисный слой, что позволяет изолировать и передать работу с базами данных (SQL-ORM и NoSQL) соответствующим [репозиториям](app/repositories/), а всю подготовку данных к передаче в эндпоинты берет на себя [Сервисный слой](app/services/).
 
