@@ -16,7 +16,7 @@ from app.repositories import MenuCacheRepository
 
 ASYNC_SQLACHLEMY_DATABASE_URL = f'postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 
-if database_exists(ASYNC_SQLACHLEMY_DATABASE_URL.replace('+asyncpg', '')):
+if not database_exists(ASYNC_SQLACHLEMY_DATABASE_URL.replace('+asyncpg', '')):
     create_database(ASYNC_SQLACHLEMY_DATABASE_URL.replace('+asyncpg', ''))
 
 async_engine = create_async_engine(ASYNC_SQLACHLEMY_DATABASE_URL, echo=False,)
