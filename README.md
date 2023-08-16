@@ -67,11 +67,13 @@ CRUD REST API ресторана, содержащий слеудующие су
 
 ## Запуск приложения в контейнерах
 
-|     |   Образы для Docker      |
-|-----|--------------------------|
-|API  | python:3.10-slim         |
-|DB   | postgres:15.1-alpine     |
-|Cache| redis/redis-stack:latest |
+|      |   Образы для Docker      |
+|------|--------------------------|
+|API   | python:3.10-slim         |
+|DB    | postgres:15.1-alpine     |
+|Cache | redis/redis-stack:latest |
+|Celery| python:3.10-slim         |
+|Broker| RabbitMQ                 |
 
 
 
