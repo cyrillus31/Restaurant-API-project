@@ -32,7 +32,7 @@ services:
         target: /restaurant_api/admin/Menu.xlsx
     environment:
       TZ: "Europe/Moscow"
-    command: bash -c "celery -A app.tasks.tasks worker -B --loglevel=debug"
+    command: bash -c "celery -A app.tasks.tasks worker -B --loglevel=info"
     depends_on:
     - rabbit
     - api
