@@ -37,14 +37,14 @@ def parser(from_previous_state: bool = False, path_to_xlsx=absolute_path) -> dic
             url_key = f'menus/{id}'
             menus[url_key] = {'id': id, 'title': title, 'description': description}
             menu_id = id
-        if pd.notna(row[1]) and type(row[1]) != str:
+        if pd.notna(row[1]) and not pd.notna(row[0]):
             id = str(row[1]).split('.')[0]
             title = row[2]
             description = row[3]
             url_key = f'menus/{menu_id}/submenus/{id}'
             submenus[url_key] = {'id': id, 'title': title, 'description': description, 'menu_id': menu_id}
             submenu_id = id
-        if pd.notna(row[3]) and type(row[2]) != str:
+        if pd.notna(row[2]) and not pd.notna(row[1]):
             id = str(row[2]).split('.')[0]
             title = row[3]
             description = row[4]

@@ -5,13 +5,9 @@ from ..config import settings
 celery_app = Celery(broker=f'amqp://guest:guest@{settings.rabbit_host}:{settings.rabbit_port}')
 celery_app.conf.beat_schedule = {
     'update_db': {
-        'task': 'update_db',
+        'task': 'update_db_from_google',
         'schedule': 15,
     },
-    # 'update_db_from_excel': {
-    # 'task': 'update_db_from_excel',
-    # 'schedule': 15,
-    # },
 }
 
 celery_app.conf.broker_connection_retry_on_startup = True
