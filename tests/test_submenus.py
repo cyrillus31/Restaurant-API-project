@@ -1,18 +1,15 @@
+from httpx import AsyncClient
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import models, schemas
 
 # CRUD testing
 
-# async def filter_query(session, orm_model, **kwargs) -> list:
-# query = select(orm_model).filter_by(**kwargs)
-# result = await session.execute(query)
-# return result.scalars().all()
-
 # Create testing
 
 
-async def test_create_menu(session, client, PREFIX, test_menus):
+async def test_create_menu(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu]) -> None:
     menu_id = test_menus[0].id
     create_data = {
         'title': 'test submenu 1 title',
@@ -27,7 +24,7 @@ async def test_create_menu(session, client, PREFIX, test_menus):
 
 
 # Read testing
-async def test_get_submenu(session, client, PREFIX, test_menus, test_submenus):
+async def test_get_submenu(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
@@ -45,7 +42,7 @@ async def test_get_submenu(session, client, PREFIX, test_menus, test_submenus):
     assert response_submenu.description == db_submenu.description
 
 
-async def test_get_menu_not_exists(session, client, PREFIX, test_menus, test_submenus):
+async def test_get_menu_not_exists(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     res = await client.get(f'{PREFIX}/menus/{menu_id}/submenus/987654321')
     assert res.status_code == 404
@@ -53,7 +50,7 @@ async def test_get_menu_not_exists(session, client, PREFIX, test_menus, test_sub
 
 
 # Read multiple testing
-async def test_read_submenus(session, client, PREFIX, test_menus, test_submenus):
+async def test_read_submenus(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     res = await client.get(f'{PREFIX}/menus/{menu_id}/submenus/')
     response_data = res.json()
@@ -70,7 +67,7 @@ async def test_read_submenus(session, client, PREFIX, test_menus, test_submenus)
     assert len(validated_submenus_list) == len(submenus_of_menu_list)
 
 
-async def test_read_menus_empty(session, client, PREFIX, test_menus):
+async def test_read_menus_empty(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu]) -> None:
     menu_id = test_menus[0].id
     res = await client.get(f'{PREFIX}/menus/{menu_id}/submenus/')
     assert res.status_code == 200
@@ -78,7 +75,7 @@ async def test_read_menus_empty(session, client, PREFIX, test_menus):
 
 
 # Update testing
-async def test_update_menu(session, client, PREFIX, test_menus, test_submenus):
+async def test_update_menu(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
@@ -100,7 +97,7 @@ async def test_update_menu(session, client, PREFIX, test_menus, test_submenus):
     assert updated_menu.description == update_data['description']
 
 
-async def test_update_submenu_not_exists(session, client, PREFIX, test_menus, test_submenus):
+async def test_update_submenu_not_exists(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     update_data = {
         'title': 'UPDATED test submenu title',
@@ -115,7 +112,7 @@ async def test_update_submenu_not_exists(session, client, PREFIX, test_menus, te
 
 
 # Delete testing
-async def test_delete_menu(session, client, PREFIX, test_menus, test_submenus):
+async def test_delete_menu(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
@@ -133,7 +130,7 @@ async def test_delete_menu(session, client, PREFIX, test_menus, test_submenus):
     assert len(all_submenus_list) == len(test_submenus) - 1
 
 
-async def test_delete_menu_not_exists(session, client, PREFIX, test_menus):
+async def test_delete_menu_not_exists(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu]) -> None:
     menu_id = test_menus[0].id
     res = await client.delete(f'{PREFIX}/menus/{menu_id}/submenus/9876543210')
     assert res.status_code == 404

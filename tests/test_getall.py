@@ -1,3 +1,8 @@
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app import models
+
 """
 #######################################
 
@@ -20,8 +25,8 @@ Restaurant
 
 
 async def test_getall_endpoint(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes,
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish],
+) -> None:
     res = await client.get(f'{PREFIX}/getall/')
     list_of_menus = res.json()['all menus']
     list_of_submenus_of_first_menu = res.json()['all menus'][0]['submenus']

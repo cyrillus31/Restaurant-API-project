@@ -1,10 +1,12 @@
+from httpx import AsyncClient
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import models, schemas
 
 
-# CRUD testing
-async def submenu_id_search(session, menu_id) -> int:
+# help functions
+async def submenu_id_search(session: AsyncSession, menu_id: str) -> str:
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
     )
@@ -12,7 +14,7 @@ async def submenu_id_search(session, menu_id) -> int:
     return submenu_id
 
 
-async def dish_id_search(session, submenu_id) -> int:
+async def dish_id_search(session: AsyncSession, submenu_id: str) -> str:
     result = (
         await session.execute(select(models.Dish).filter(models.Dish.submenu_id == submenu_id))
     )
@@ -20,8 +22,9 @@ async def dish_id_search(session, submenu_id) -> int:
     return dish_id
 
 
+# CRUD testing
 # Create testing
-async def test_create_dish(session, client, PREFIX, test_menus, test_submenus):
+async def test_create_dish(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
@@ -44,7 +47,7 @@ async def test_create_dish(session, client, PREFIX, test_menus, test_submenus):
 
 
 # Read testing
-async def test_get_dish(session, client, PREFIX, test_menus, test_submenus, test_dishes):
+async def test_get_dish(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]) -> None:
     menu_id = test_menus[0].id
     submenu_id = await submenu_id_search(session, menu_id)
     dish_id = await dish_id_search(session, submenu_id)
@@ -61,8 +64,8 @@ async def test_get_dish(session, client, PREFIX, test_menus, test_submenus, test
 
 
 async def test_get_menu_not_exists(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]
+) -> None:
     menu_id = test_menus[0].id
     submenu_id = await submenu_id_search(session, menu_id)
 
@@ -74,7 +77,7 @@ async def test_get_menu_not_exists(
 
 
 # Read multiple testing
-async def test_read_dishes(session, client, PREFIX, test_menus, test_submenus, test_dishes):
+async def test_read_dishes(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]) -> None:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
@@ -93,7 +96,7 @@ async def test_read_dishes(session, client, PREFIX, test_menus, test_submenus, t
     assert len(validated_dishes_list) == len(dishes_of_submenu_list)
 
 
-async def test_read_menus_empty(session, client, PREFIX, test_menus, test_submenus):
+async def test_read_menus_empty(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> None:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(models.Submenu.menu_id == menu_id))
@@ -105,7 +108,7 @@ async def test_read_menus_empty(session, client, PREFIX, test_menus, test_submen
 
 
 # Update testing
-async def test_update_dish(session, client, PREFIX, test_menus, test_submenus, test_dishes):
+async def test_update_dish(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]) -> None:
     menu_id = test_menus[0].id
     submenu_id = await submenu_id_search(session, menu_id)
     dish_id = await dish_id_search(session, submenu_id)
@@ -129,8 +132,8 @@ async def test_update_dish(session, client, PREFIX, test_menus, test_submenus, t
 
 
 async def test_update_menu_not_exists(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]
+) -> None:
     menu_id = test_menus[0].id
     submenu_id = await submenu_id_search(session, menu_id)
     update_data = {
@@ -148,7 +151,7 @@ async def test_update_menu_not_exists(
 
 
 # Delete testing
-async def test_delete_dish(session, client, PREFIX, test_menus, test_submenus, test_dishes):
+async def test_delete_dish(session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]) -> None:
     menu_id = test_menus[0].id
     submenu_id = await submenu_id_search(session, menu_id)
     dish_id = await dish_id_search(session, submenu_id)
@@ -167,8 +170,8 @@ async def test_delete_dish(session, client, PREFIX, test_menus, test_submenus, t
 
 
 async def test_delete_dish_not_exists(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish]
+) -> None:
     menu_id = test_menus[0].id
     submenu_id = await submenu_id_search(session, menu_id)
     res = await client.delete(
