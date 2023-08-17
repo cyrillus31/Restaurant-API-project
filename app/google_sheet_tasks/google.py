@@ -59,4 +59,5 @@ def create_excel_from_google_sheets(path):
     values = get_data_from_google_sheets()
     df = convert_to_dataframe(values)
     df = df.apply(fill_nan)
-    df.to_excel(path, index=False)
+    df.to_excel(path, index=False, header=False)
+    print('Excel file was created from google sheets')

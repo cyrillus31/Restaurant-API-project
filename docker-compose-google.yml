@@ -2,8 +2,6 @@ version: '3'
 services:
   api:
     build: .
-    volumes:
-      - app_volume:/restaurant_api/app
     depends_on:
       - db
     ports:
@@ -27,7 +25,7 @@ services:
     build: .
     environment:
       TZ: "Europe/Moscow"
-    command: bash -c "celery -A app.google_sheet_tasks.tasks worker -B --loglevel=info"
+    command: bash -c "celery -A app.google_sheet_tasks.google_tasks worker -B --loglevel=info"
     depends_on:
     - rabbit
     - api

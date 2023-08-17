@@ -11,7 +11,7 @@
 **/*.dir
 
 # Admin's folder
-# **/admin/
+**/admin/Menus.xlsx
 
 # Docker related
 **/*docker*
