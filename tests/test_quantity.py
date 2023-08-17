@@ -40,12 +40,6 @@ async def test_dishes_quantitiy_in_menu(
     session, client, PREFIX, test_menus, test_submenus, test_dishes, menu_index
 ):
     menu_id = test_menus[menu_index].id
-    # submenu_id = (
-    # session.query(models.Submenu)
-    # .filter(models.Submenu.menu_id == menu_id)
-    # .first()
-    # .id
-    # )
 
     res = await client.get(f'{PREFIX}/menus/{menu_id}')
     result = (
