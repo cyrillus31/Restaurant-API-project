@@ -32,7 +32,7 @@
     - [Запуск приложения в контейнерах](#запуск-приложения-в-контейнерах)
 		- [Стандартный запуск](#стандартный-запуск)
         - [Запуск тестов](#запуск-асинхронных-тестов-на-pytest-с-помощью-docker-compose)
-		- [(!!!)Запуск в режиме синхронизации с Google sheets](#запуск-в-режиме-синхронизации-с-google-sheets)
+		- [Запуск в режиме синхронизации с Google sheets](#запуск-в-режиме-синхронизации-с-google-sheets)
     - [Кэширование Redis](#кэширование)
     - [Паттерны Репозиторий и Сервисный слой](#паттерны)
     - [Тестирование](#тестирование)
@@ -119,6 +119,7 @@ CRUD REST API ресторана, содержащий следующие сущ
 docker-compose up -d
 ```
 API будет доступен по следующему URL: http://127.0.0.1:8000/api/v1/
+<br><br>
 
 > **Important**
 > Тесты на Postman  следует запускать на пустой БД, поэтому следует очистить [Excel](admin/Menu.xlsx) таблицу администратора и подождать ~15 секунд, чтобы база данных пришла в соответствие.
@@ -140,11 +141,13 @@ docker-compose -f docker-compose-tests.yml up
 docker-compose -f docker-compose-google.yml up
 ```
 
+Файл доступен по ссылке:
+https://docs.google.com/spreadsheets/d/1HhPN8TKMyfb8Yy5dZ5S_reSsGHxike4Tv4P8VSz28o8/edit?usp=sharing
+<br><br>
+
 > **Warning**
 > В некорректной работы контейнеров: перед запуском каждой команды Docker-compose рекомендуется удалять ранее собранные образы контейнеров.
 
-Файл доступен по ссылке:
-https://docs.google.com/spreadsheets/d/1HhPN8TKMyfb8Yy5dZ5S_reSsGHxike4Tv4P8VSz28o8/edit?usp=sharing
 
 ## Кэширование
 Для хранения кэша использована NoSQL база данных [Redis](https://redis.io/).
