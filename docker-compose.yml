@@ -2,10 +2,9 @@ version: '3'
 services:
   api:
     build: .
-    # volumes:
-      # - app_volume:/restaurant_api/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - '8000:8000'
 
@@ -15,18 +14,25 @@ services:
       TZ: 'Europe/Moscow'
       POSTGRES_PASSWORD: 'password'
       POSTGRES_DB: 'data'
+      PGUSER: 'postgres'
     expose:
       - '5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   cache:
     image: redis/redis-stack:latest
     ports:
       - '6379:6379'
     depends_on:
       - db
+
   celery:
     build: .
     volumes:
-      # - app_volume:/restaurant_api/app
       - type: bind
         source: ./admin/Menu.xlsx
         target: /restaurant_api/admin/Menu.xlsx
@@ -34,16 +40,23 @@ services:
       TZ: "Europe/Moscow"
     command: bash -c "celery -A app.tasks.tasks worker -B --loglevel=info"
     depends_on:
-    - rabbit
-    - api
-    - db
-    - cache
+      - rabbit
+      - api
+      - db
+      - cache
+
   rabbit:
     image: rabbitmq
     ports:
     - "5672:5672"
     environment:
       TZ: Europe/Moscow
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 volumes:
   admin_excel:
   app_volume:
