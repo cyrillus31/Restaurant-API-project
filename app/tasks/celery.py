@@ -8,10 +8,6 @@ celery_app.conf.beat_schedule = {
         'task': 'update_db',
         'schedule': 15,
     },
-    # 'update_db_from_excel': {
-    # 'task': 'update_db_from_excel',
-    # 'schedule': 15,
-    # },
 }
 
 celery_app.conf.broker_connection_retry_on_startup = True

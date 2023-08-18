@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Generator
 from typing import AsyncGenerator
 
 import pytest
@@ -26,22 +27,22 @@ testing_async_session = sessionmaker(autocommit=False, autoflush=False,
 
 
 @pytest.fixture(autouse=True, scope='session')
-def PREFIX():
+def PREFIX() -> str:
     return '/api/v1'
 
 
 @pytest.fixture(autouse=True, scope='function')  # test empty cache
-async def empty_cache():
+async def empty_cache() -> None:
     await MenuCacheRepository.deinitialize_all()
 
 
 @pytest.fixture(scope='session')
-def anyio_backend():
+def anyio_backend() -> str:
     return 'asyncio'
 
 
 @pytest.fixture(scope='function')
-async def session():
+async def session() -> AsyncGenerator:
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -53,7 +54,7 @@ async def session():
 
 
 @pytest.fixture(scope='session')
-def event_loop():
+def event_loop() -> Generator:
     policy = asyncio.get_event_loop_policy()
     loop = policy.new_event_loop()
     yield loop
@@ -99,7 +100,7 @@ Restaurant
 
 
 @pytest.fixture(scope='function')
-async def test_menus(session):
+async def test_menus(session: AsyncSession) -> list[models.Menu]:
     menus_data = [
         {'title': 'test menu 1', 'description': 'description of test menu 1'},
         {'title': 'test menu 2', 'description': 'description of test menu 2'},
@@ -115,7 +116,7 @@ async def test_menus(session):
 
 
 @pytest.fixture(scope='function')
-async def test_submenus(session, test_menus):
+async def test_submenus(session: AsyncSession, test_menus: list[models.Menu]) -> list[models.Submenu]:
     menu1_id = test_menus[0].id
     menu2_id = test_menus[1].id
     # menu3_id = test_menus[2].id
@@ -147,7 +148,7 @@ async def test_submenus(session, test_menus):
 
 
 @pytest.fixture(scope='function')
-async def test_dishes(session, test_menus, test_submenus):
+async def test_dishes(session: AsyncSession, test_menus: list[models.Menu], test_submenus: list[models.Submenu]) -> list[models.Dish]:
     menu_id = test_menus[0].id
     result = (
         await session.execute(select(models.Submenu).filter(

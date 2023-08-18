@@ -1,5 +1,7 @@
 import pytest
+from httpx import AsyncClient
 from sqlalchemy import and_, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import models
 
@@ -14,8 +16,8 @@ from app import models
     ),
 )
 async def test_submenus_quantitiy_in_menu(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes, menu_index
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish], menu_index: int
+) -> None:
     menu_id = test_menus[menu_index].id
 
     res = await client.get(f'{PREFIX}/menus/{menu_id}')
@@ -37,15 +39,9 @@ async def test_submenus_quantitiy_in_menu(
     ),
 )
 async def test_dishes_quantitiy_in_menu(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes, menu_index
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish], menu_index: int
+) -> None:
     menu_id = test_menus[menu_index].id
-    # submenu_id = (
-    # session.query(models.Submenu)
-    # .filter(models.Submenu.menu_id == menu_id)
-    # .first()
-    # .id
-    # )
 
     res = await client.get(f'{PREFIX}/menus/{menu_id}')
     result = (
@@ -66,8 +62,8 @@ async def test_dishes_quantitiy_in_menu(
     ),
 )
 async def test_dishes_quantitiy_in_submenu(
-    session, client, PREFIX, test_menus, test_submenus, test_dishes, menu_index
-):
+    session: AsyncSession, client: AsyncClient, PREFIX: str, test_menus: list[models.Menu], test_submenus: list[models.Submenu], test_dishes: list[models.Dish], menu_index: int
+) -> None:
     menu_id = test_menus[menu_index].id
     result = (
         await session.execute(select(models.Submenu)
