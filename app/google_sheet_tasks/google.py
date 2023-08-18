@@ -1,4 +1,5 @@
 import os.path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -14,7 +15,7 @@ SPREADSHEET_ID = '1HhPN8TKMyfb8Yy5dZ5S_reSsGHxike4Tv4P8VSz28o8'
 CRIDENTIALS_JSON = './app/google_sheet_tasks/token.json'
 
 
-def get_data_from_google_sheets():
+def get_data_from_google_sheets() -> list[list[Any]]:  # type: ignore
     credentials = None
     if os.path.exists('./app/google_sheet_tasks/token.json'):
         credentials = Credentials.from_authorized_user_file('./app/google_sheet_tasks/token.json', SCOPES)
@@ -40,7 +41,7 @@ def get_data_from_google_sheets():
         print(error)
 
 
-def convert_to_dataframe(values: list):
+def convert_to_dataframe(values: list) -> pd.DataFrame:
     for value in values:
         dif = 6 - len(value)
         value = value + [[]] * dif
@@ -48,14 +49,14 @@ def convert_to_dataframe(values: list):
     return df
 
 
-def fill_nan(x):
+def fill_nan(x: Any) -> Any | type[np.nan]:
     if x.empty:
         return np.nan
     else:
         return x
 
 
-def create_excel_from_google_sheets(path):
+def create_excel_from_google_sheets(path: str) -> None:
     values = get_data_from_google_sheets()
     df = convert_to_dataframe(values)
     df = df.apply(fill_nan)

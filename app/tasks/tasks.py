@@ -14,21 +14,21 @@ PREFIX = 'api/v1/'
 URL = f'http://api:8000/{PREFIX}'
 
 
-async def put_request(url_key, payload):
+async def put_request(url_key: str, payload: dict) -> None:
     _url = URL + url_key
     async with aiohttp.ClientSession() as session:
         async with session.patch(_url, json=payload) as response:
             print(response)
 
 
-async def delete_request(url_key, payload):
+async def delete_request(url_key: str, payload: dict) -> None:
     _url = URL + url_key
     async with aiohttp.ClientSession() as session:
         async with session.delete(_url)as response:
             print(response)
 
 
-async def post_request(url_key, set_id, payload):
+async def post_request(url_key: str, set_id: str, payload: dict) -> None:
     url_key = '/'.join(url_key.split('/')[:-1])
     _url = URL + url_key + f'/?id={set_id}'
     async with aiohttp.ClientSession() as session:
@@ -36,7 +36,7 @@ async def post_request(url_key, set_id, payload):
             print(response)
 
 
-async def sync_db():
+async def sync_db() -> None:
     create_temp_if_doesnt_exist()
     prev = parser(from_previous_state=True)
     curr = parser()
@@ -62,5 +62,5 @@ async def sync_db():
 
 
 @celery_app.task(name='update_db')
-def update_tables_task():
+def update_tables_task() -> None:
     return asyncio.run(sync_db())

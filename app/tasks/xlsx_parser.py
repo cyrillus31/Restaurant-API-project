@@ -10,17 +10,17 @@ absolute_path = os.path.join(cwd, file_path)
 absolute_path_to_temp = os.path.join(cwd, 'admin/.previous_state_menu.xlsx')
 
 
-def create_temp_if_doesnt_exist():
+def create_temp_if_doesnt_exist() -> None:
     if not os.path.exists(absolute_path_to_temp):
         wb = openpyxl.Workbook()
         wb.save(absolute_path_to_temp)
 
 
-def update_previous_state_file():
+def update_previous_state_file() -> None:
     shutil.copyfile(absolute_path, absolute_path_to_temp)
 
 
-def parser(from_previous_state: bool = False, path_to_xlsx=absolute_path) -> dict:
+def parser(from_previous_state: bool = False, path_to_xlsx: str = absolute_path) -> dict:
     if from_previous_state:
         path_to_xlsx = absolute_path_to_temp
     df = pd.read_excel(path_to_xlsx, header=None)

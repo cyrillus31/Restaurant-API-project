@@ -7,6 +7,6 @@ from .google import create_excel_from_google_sheets
 
 
 @celery_app.task(name='update_db_from_google')
-def update_tables_task_from_google_sheets():
+def update_tables_task_from_google_sheets() -> None:
     create_excel_from_google_sheets(absolute_path)
     return asyncio.run(sync_db())
