@@ -3,7 +3,8 @@ services:
   api:
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - '8000:8000'
 
@@ -13,30 +14,43 @@ services:
       TZ: 'Europe/Moscow'
       POSTGRES_PASSWORD: 'password'
       POSTGRES_DB: 'data'
+      PGUSER: 'postgres'
     expose:
       - '5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   cache:
     image: redis/redis-stack:latest
     ports:
       - '6379:6379'
     depends_on:
       - db
+
   celery:
     build: .
     environment:
       TZ: "Europe/Moscow"
     command: bash -c "celery -A app.google_sheet_tasks.google_tasks worker -B --loglevel=info"
     depends_on:
-    - rabbit
-    - api
-    - db
-    - cache
+      rabbit:
+        condition: service_healthy
+
   rabbit:
     image: rabbitmq
     ports:
     - "5672:5672"
     environment:
       TZ: Europe/Moscow
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 volumes:
   admin_excel:
   app_volume:
