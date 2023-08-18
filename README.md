@@ -96,7 +96,7 @@ CRUD REST API ресторана, содержащий следующие сущ
 ## Endpoint `getall/`
 Возвращает все меню, связанные с ними подменю и связанные с ними блюда одним запросом.
 
-#### Структура JSON ответа эндпоинта:
+#### Структура JSON ответа эндпоинта `getall/`:
 
 <img src='docs\JSON-getall3.png'>
 
@@ -139,6 +139,9 @@ docker-compose -f docker-compose-tests.yml up
 ```
 docker-compose -f docker-compose-google.yml up
 ```
+
+> **Warning**
+> В некорректной работы контейнеров: перед запуском каждой команды Docker-compose рекомендуется удалять ранее собранные образы контейнеров.
 
 Файл доступен по ссылке:
 https://docs.google.com/spreadsheets/d/1HhPN8TKMyfb8Yy5dZ5S_reSsGHxike4Tv4P8VSz28o8/edit?usp=sharing
