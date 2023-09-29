@@ -11,4 +11,4 @@
 **/*.dat
 **/*.dir
 **/~$*
-**/DS_Store
+**/.DS_Store
