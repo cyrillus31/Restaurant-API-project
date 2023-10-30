@@ -56,6 +56,9 @@
 <br>
 
 ## Описание API
+
+[http://cyrillus-restaurant-api.fvds.ru/docs](http://cyrillus-restaurant-api.fvds.ru/docs)
+
 CRUD REST API ресторана, содержащий следующие сущности:
 
 - **Меню/ Menue**
